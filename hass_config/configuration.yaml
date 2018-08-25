@@ -61,30 +61,31 @@ sun:
 tts:
   - platform: google
 
-hachina:
-  name_tobe_displayed: 测试
-  step: 1
 
-sensor:
-  - platform: yr
-  - platform: hachinab
-    # 设置scan_interval，对于会拉取状态的设备，都会存在这个配置项，缺省值为30（秒）
-    scan_interval: 60
-    city: wuhan
-    appkey: a99bd640f9f3b5eddcbd9ea44cabe2c2
-    options:
-      - temprature
-      - humidity
-      - pm25
+# sensor:
+#   - platform: hachinab
+#     # 设置scan_interval，对于会拉取状态的设备，都会存在这个配置项，缺省值为30（秒）
+#     scan_interval: 60
+#     city: wuhan
+#     appkey: a99bd640f9f3b5eddcbd9ea44cabe2c2
+#     options:
+#       - temprature
+#       - humidity
+#       - pm25
+
 # enocean:
-#   device: /dev/ttyUSB0
-# light:
-#   - platform: enocean
-#     dev_id: [0x01,0x90,0x84,0x3C]
-#     sender_id: [0xFF,0xC6,0xEA,0x04]
-# # switch:
-#   - platform: enocean
-#     id: [0x01,0x90,0x84,0x3C]
+#   device: /dev/cu.MALS
+
+linptech_dongle:
+  device: /dev/cu.SOC
+
+light:
+  - platform: linptech_bulb
+    id: 8000524B
+    #sender_id: [0xFF,0xC6,0xEA,0x04]
+  # - platform: enocean
+  #   #dev_id: [0x01,0x90,0x84,0x3C]
+  #   sender_id: [0xFF,0xC6,0xEA,0x04]
 
 
 

@@ -35,7 +35,7 @@ ATTR_UPDATE_TIME = "更新时间"
 ATTRIBUTION = "来自京东万象的天气数据"
 
 PLATFORM_SCHEMA=PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_CITY):cv.string,
+    vol.Required(CONF_CITY,default="wuhan"):cv.string,
     vol.Required(CONF_APPKEY):cv.string,
     vol.Required(CONF_OPTIONS,default=[]):vol.All(cv.ensure_list,[vol.In(OPTIONS)])
 })
