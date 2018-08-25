@@ -82,18 +82,25 @@ linptech_dongle:
 light:
   - platform: linptech_bulb
     id: 8000524B
+    name: b3
   - platform: linptech_bulb
+    name: b1
     id: 80005103
   - platform: linptech_bulb
     id: 800050EC
+    name: b2
   - platform: linptech_bulb
     id: 80004E71
+    name: b5
   - platform: linptech_bulb
     id: 80005016
+    name: b4
   - platform: linptech_bulb
     id: 8000468A
+    name: b7
   - platform: linptech_bulb
     id: 8000513D
+    name: b6
 
 # Cloud
 cloud:

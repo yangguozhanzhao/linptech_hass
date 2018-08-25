@@ -188,9 +188,9 @@ class LinptechSerial(object):
 	def write(self, data, isHex=True):
 		if self.alive:
 			if self.l_serial.isOpen():
+				print("指令-》》》》》》》》》",data)
 				if isHex:
 					data = binascii.unhexlify(data)
-				print("指令-》》》》》》》》》",data)
 				self.l_serial.write(data)
 
 
