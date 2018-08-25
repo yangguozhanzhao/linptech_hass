@@ -47,7 +47,7 @@ class EnOceanLight(LinptechDevice, Light):
     def __init__(self, sender_id, devname, dev_id):
         """Initialize the EnOcean light source."""
         LinptechDevice.__init__(self)
-        self._on_state = False
+        self._on_state = True
         self._brightness = 50
         self._sender_id = sender_id
         self.dev_id = dev_id
@@ -81,13 +81,13 @@ class EnOceanLight(LinptechDevice, Light):
     def turn_on(self, **kwargs):
         """Turn the light source on or sets a specific dimmer value."""
         
-        command = "1f"+self.dev_id+"1A020101"
+        command = "1f"+self.dev_id+"A1020101"
         self.send_command(command)
         self._on_state = True
 
     def turn_off(self, **kwargs):
         """Turn the light source off."""
-        command = "1f"+self.dev_id+"1A020100"
+        command = "1f"+self.dev_id+"A1020100"
         self.send_command(command)
         self._on_state = False
 

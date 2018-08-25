@@ -38,22 +38,22 @@ updater:
   # include_used_components: true
 
 # Discover some devices automatically
-discovery:
+# discovery:
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
 # Enables support for tracking state changes over time
-history:
+#history:
 
 # View all events in a logbook
-logbook:
+#logbook:
 
 # Enables a map showing the location of tracked devices
-map:
+#map:
 
 # Track the sun
-sun:
+#sun:
 
 # Weather prediction
 
@@ -77,17 +77,23 @@ tts:
 #   device: /dev/cu.MALS
 
 linptech_dongle:
-  device: /dev/cu.SOC
+  device: COM3
 
 light:
   - platform: linptech_bulb
     id: 8000524B
-    #sender_id: [0xFF,0xC6,0xEA,0x04]
-  # - platform: enocean
-  #   #dev_id: [0x01,0x90,0x84,0x3C]
-  #   sender_id: [0xFF,0xC6,0xEA,0x04]
-
-
+  - platform: linptech_bulb
+    id: 80005103
+  - platform: linptech_bulb
+    id: 800050EC
+  - platform: linptech_bulb
+    id: 80004E71
+  - platform: linptech_bulb
+    id: 80005016
+  - platform: linptech_bulb
+    id: 8000468A
+  - platform: linptech_bulb
+    id: 8000513D
 
 # Cloud
 cloud:

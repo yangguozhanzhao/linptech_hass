@@ -46,6 +46,7 @@ class LinptechDongle:
 
 	def send_command(self, packet):
 		"""Send a command from the Linptech dongle."""
+		
 		self._serial.write(packet)
 
 
@@ -189,6 +190,7 @@ class LinptechSerial(object):
 			if self.l_serial.isOpen():
 				if isHex:
 					data = binascii.unhexlify(data)
+				print("指令-》》》》》》》》》",data)
 				self.l_serial.write(data)
 
 
