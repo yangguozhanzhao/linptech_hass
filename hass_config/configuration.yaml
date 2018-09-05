@@ -21,7 +21,6 @@ frontend:
 
 # Enables configuration UI
 config:
-
 #http:
   # Secrets are defined in the file secrets.yaml
   # api_password: !secret http_password
@@ -38,8 +37,7 @@ updater:
   # include_used_components: true
 
 # Discover some devices automatically
-# discovery:
-
+#discovery:
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
@@ -47,7 +45,7 @@ conversation:
 #history:
 
 # View all events in a logbook
-#logbook:
+logbook:
 
 # Enables a map showing the location of tracked devices
 #map:
@@ -62,22 +60,36 @@ tts:
   - platform: google
 
 
-# sensor:
-#   - platform: hachinab
-#     # 设置scan_interval，对于会拉取状态的设备，都会存在这个配置项，缺省值为30（秒）
-#     scan_interval: 60
-#     city: wuhan
-#     appkey: a99bd640f9f3b5eddcbd9ea44cabe2c2
-#     options:
-#       - temprature
-#       - humidity
-#       - pm25
+sensor:
+  - platform: mitemp_bt 
+    mac: '4C:65:A8:D3:9F:46' #工厂小米温湿度计
+    name: 温湿度
+    force_update: false
+    median: 3
+    monitored_conditions:
+      - temperature
+      - humidity
 
-# enocean:
-#   device: /dev/cu.MALS
+switch:
+  - platform: chuangmi_ir
+    name: "办公室"
+    host:  192.168.1.228
+    token: 364a603cd596d39e674f97badf430830
+    switches:
+      reciever:
+        command_on: Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
+        command_off: Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
 
+# hair_air:Z6XlACwCAABjBgAA0AsAAEMRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiMhAAEAAAEBAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAEBAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAQABAQEAAQEBAA
+# letv:Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
+# Device ID: 88224799
+#Model info: chuangmi.ir.v2
+#Address: 192.168.1.228
+#Token: 364a603cd596d39e674f97badf430830 via auto-token
+#Support: At least generic
+ 
 linptech_dongle:
-  device: COM3
+  device: /dev/ttyUSB0
 
 light:
   - platform: linptech_bulb
@@ -103,7 +115,7 @@ light:
     name: b6
 
 # Cloud
-cloud:
+# cloud:
 
 # floorplan
 panel_custom:

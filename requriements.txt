@@ -1,1 +1,2 @@
-homeassistant
+homeassistant==0.77.3
+pyserial==3.4
