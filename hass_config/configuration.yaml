@@ -92,28 +92,74 @@ linptech_dongle:
   device: /dev/ttyUSB0
 
 light:
-  - platform: linptech_bulb
-    id: 8000524B
-    name: b3
-  - platform: linptech_bulb
-    name: b1
-    id: 80005103
-  - platform: linptech_bulb
-    id: 800050EC
-    name: b2
-  - platform: linptech_bulb
-    id: 80004E71
-    name: b5
-  - platform: linptech_bulb
-    id: 80005016
+  #- platform: linptech_bulb
+  #  id: 8000524B
+  #  name: b3
+  #- platform: linptech_bulb
+  #  name: b1
+  #  id: 80005103
+  #- platform: linptech_bulb
+  #  id: 800050EC
+  #  name: b2
+  #- platform: linptech_bulb
+  #  id: 80004E71
+  #  name: b5
+  #- platform: linptech_bulb
+  #  id: 80005016
+  #  name: b4
+  #- platform: linptech_bulb
+  #  id: 8000468A
+  #  name: b7
+  #- platform: linptech_bulb
+  #  id: 8000513D
+  #  name: b6
+  
+  #办公室
+  - platform: linptech_LVR910
+    id: 80016C9E
     name: b4
-  - platform: linptech_bulb
-    id: 8000468A
-    name: b7
-  - platform: linptech_bulb
-    id: 8000513D
+  - platform: linptech_LVR910
+    id: 80016D13
+    name: b5
+  - platform: linptech_LVR910
+    id: 80016CB7
     name: b6
+  - platform: linptech_LVR910
+    id: 80016CA8
+    name: b3
+  - platform: linptech_LVR910
+    id: 80016CAD
+    name: b2
+  - platform: linptech_LVR910
+    id: 80016C94
+    name: b1
 
+  #模块车间
+  - platform: linptech_LVR910
+    id: 80016CB6
+    name: b7
+  - platform: linptech_LVR910
+    id: 80016BFC
+    name: b8
+  - platform: linptech_LVR910
+    id: 80016C90
+    name: b9
+  - platform: linptech_LVR910
+    id: 80016DD0
+    name: b10
+  - platform: linptech_LVR910
+    id: 80016C65
+    name: b11
+  - platform: linptech_LVR910
+    id: 80016C60
+    name: b12
+  - platform: linptech_LVR910
+    id: 80016C5B
+    name: b13
+  - platform: linptech_LVR910
+    id: 80016DAD
+    name: b14
+    
 # Cloud
 # cloud:
 
