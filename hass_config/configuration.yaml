@@ -89,7 +89,7 @@ switch:
 #Support: At least generic
  
 linptech_dongle:
-  device: /dev/ttyUSB0
+  device: /dev/tty.SLAB_USBtoUART 
 
 light:
   #- platform: linptech_bulb
@@ -159,7 +159,7 @@ light:
   - platform: linptech_LVR910
     id: 80016DAD
     name: b14
-    
+
 # Cloud
 # cloud:
 
