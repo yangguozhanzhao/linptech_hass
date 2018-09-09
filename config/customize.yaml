@@ -1,0 +1,26 @@
+light.b1:
+  friendly_name: 台灯
+light.r1:
+  friendly_name: 门口工位灯
+light.r6:
+  friendly_name: 会议桌灯
+light.r3:
+  friendly_name: 打印机灯
+
+sensor._humidity:
+  friendly_name: 室内湿度
+sensor._temperature:
+  friendly_name: 室内温度
+
+sun.sun:
+  friendly_name: 太阳
+
+sensor.weather_humidity:
+  friendly_name: 室外湿度
+sensor.weather_symbol:
+  friendly_name: 室外天气
+sensor.weather_temperature:
+  friendly_name: 室外气温
+
+sensor.time:
+  friendly_name: 时间

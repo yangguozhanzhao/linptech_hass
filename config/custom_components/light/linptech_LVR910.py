@@ -1,12 +1,12 @@
 """
-Support for EnOcean light sources.
-
-For more details about this platform, please refer to the documentation at
-https://home-assistant.io/components/light.enocean/
+领普科技 lvr_910接收器
 """
+#-*- coding:utf-8 -*-
+
+
 import logging
 import math
-
+import time
 import voluptuous as vol
 
 from homeassistant.components.light import (
@@ -21,7 +21,6 @@ CONF_SENDER_ID = 'sender_id'
 
 DEFAULT_NAME = 'Linptech Light'
 
-SUPPORT_ENOCEAN = SUPPORT_BRIGHTNESS
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     # vol.Optional(CONF_ID, default=[]):
@@ -33,26 +32,23 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
-    """Set up the EnOcean light platform."""
+    """Set up the linptech light platform."""
     sender_id = config.get(CONF_SENDER_ID)
     devname = config.get(CONF_NAME)
     dev_id = config.get(CONF_ID)
+    add_devices([LinptechLight(sender_id, devname, dev_id)])
 
-    add_devices([EnOceanLight(sender_id, devname, dev_id)])
 
-
-class EnOceanLight(LinptechDevice, Light):
-    """Representation of an EnOcean light source."""
-
+class LinptechLight(LinptechDevice, Light):
+    """Representation of an linptech light source."""
     def __init__(self, sender_id, devname, dev_id):
-        """Initialize the EnOcean light source."""
+        """Initialize the linptech light source."""
         LinptechDevice.__init__(self)
-        self._on_state = True
-        self._brightness = 50
+        self._on_state = False
         self._sender_id = sender_id
         self.dev_id = dev_id
         self._devname = devname
-        self.stype = 'dimmer'
+        self.type = '81'
 
     @property
     def name(self):
@@ -60,39 +56,25 @@ class EnOceanLight(LinptechDevice, Light):
         return self._devname
 
     @property
-    def brightness(self):
-        """Brightness of the light.
-
-        This method is optional. Removing it indicates to Home Assistant
-        that brightness is not supported for this light.
-        """
-        return self._brightness
-
-    @property
     def is_on(self):
         """If light is on."""
         return self._on_state
-
-    @property
-    def supported_features(self):
-        """Flag supported features."""
-        return SUPPORT_ENOCEAN
+    
+    def get_state(self):
+        command="1f"+self.dev_id+self.type+"01"
+        self.send_command(command)
 
     def turn_on(self, **kwargs):
-        """Turn the light source on or sets a specific dimmer value."""
-        
-        command = "1f"+self.dev_id+"A1020101"
+        command = "1f"+self.dev_id+self.type+"020101"
         self.send_command(command)
         self._on_state = True
 
     def turn_off(self, **kwargs):
-        """Turn the light source off."""
-        command = "1f"+self.dev_id+"A1020100"
+        command = "1f"+self.dev_id+self.type+"020100"
         self.send_command(command)
         self._on_state = False
 
-    # def value_changed(self, val):
-    #     """Update the internal state of this device."""
-    #     self._brightness = math.floor(val / 100.0 * 256.0)
-    #     self._on_state = bool(val != 0)
-    #     self.schedule_update_ha_state()
+    def value_changed(self, val):
+        """Update the internal state of this device."""
+        self._on_state = bool(val != 0)
+        self.schedule_update_ha_state()

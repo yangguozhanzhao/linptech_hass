@@ -1,15 +1,15 @@
 homeassistant:
   # Name of the location where Home Assistant is running
-  name: Home
+  name: 领普工厂
   # Location required to calculate the time the sun rises and sets
-  latitude: 0
-  longitude: 0
+  latitude: 30.4418011306
+  longitude: 114.4398800908
   # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 0
   # metric for Metric, imperial for Imperial
   unit_system: metric
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  time_zone: UTC
+  time_zone: Asia/Shanghai
   # Customization file
   customize: !include customize.yaml
 
@@ -42,43 +42,64 @@ updater:
 conversation:
 
 # Enables support for tracking state changes over time
-#history:
+history:
 
 # View all events in a logbook
-logbook:
+#logbook:
 
 # Enables a map showing the location of tracked devices
 #map:
 
 # Track the sun
-#sun:
+sun:
 
 # Weather prediction
 
 # Text to speech
-tts:
-  - platform: google
+# tts:
+#   - platform: google
+#     language: 'zh-cn'
+# sudo sed -i s/translate.google.com/translate.google.cn/g `grep translate.google.com -rl --include="*.py" /home/pi/.homeassistant /usr/local/lib`
+# mkdir -p /home/pi/.homeassistant/custom_components/tts
+# cp `grep translate.google.cn -rl --include="google.py" /usr/local/lib/python3.5/dist-packages/homeassistant/components/tts` /home/pi/.homeassistant/custom_components/tts
 
 
 sensor:
+  #小米温湿度计
   - platform: mitemp_bt 
-    mac: '4C:65:A8:D3:9F:46' #工厂小米温湿度计
+    mac: '4C:65:A8:D3:9F:46'
     name: 温湿度
     force_update: false
     median: 3
     monitored_conditions:
       - temperature
       - humidity
+  #天气信息
+  - platform: yr
+    name: Weather
+    #获得0小时后的数据
+    forecast: 0
+    monitored_conditions:
+      # 温度
+      - temperature
+      # 显示天气图标
+      - symbol
+      # 湿度
+      - humidity
+  # 日期时间
+  - platform: time_date  #设置工作平台为time_date
+    display_options:  #设置信息显示内容选项
+      - 'time'
 
-switch:
-  - platform: chuangmi_ir
-    name: "办公室"
-    host:  192.168.1.228
-    token: 364a603cd596d39e674f97badf430830
-    switches:
-      reciever:
-        command_on: Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
-        command_off: Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
+# switch:
+#   - platform: xiaomi_miio
+#     name: "办公室"
+#     host:  192.168.1.228
+#     token: 364a603cd596d39e674f97badf430830
+#     switches:
+#       reciever:
+#         command_on: Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
+#         command_off: Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
 
 # hair_air:Z6XlACwCAABjBgAA0AsAAEMRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiMhAAEAAAEBAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAEBAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAQABAQEAAQEBAA
 # letv:Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
@@ -89,76 +110,60 @@ switch:
 #Support: At least generic
  
 linptech_dongle:
-  device: /dev/tty.SLAB_USBtoUART 
+  device: /dev/tty.SLAB_USBtoUART
+  #device: /dev/tty.SOC
 
 light:
-  #- platform: linptech_bulb
-  #  id: 8000524B
-  #  name: b3
-  #- platform: linptech_bulb
-  #  name: b1
-  #  id: 80005103
-  #- platform: linptech_bulb
-  #  id: 800050EC
-  #  name: b2
-  #- platform: linptech_bulb
-  #  id: 80004E71
-  #  name: b5
-  #- platform: linptech_bulb
-  #  id: 80005016
-  #  name: b4
-  #- platform: linptech_bulb
-  #  id: 8000468A
-  #  name: b7
-  #- platform: linptech_bulb
-  #  id: 8000513D
-  #  name: b6
-  
   #办公室
   - platform: linptech_LVR910
     id: 80016C9E
-    name: b4
+    name: r4
   - platform: linptech_LVR910
     id: 80016D13
-    name: b5
+    name: r5
   - platform: linptech_LVR910
     id: 80016CB7
-    name: b6
+    name: r6
   - platform: linptech_LVR910
     id: 80016CA8
-    name: b3
+    name: r3
   - platform: linptech_LVR910
     id: 80016CAD
-    name: b2
+    name: r2
   - platform: linptech_LVR910
     id: 80016C94
-    name: b1
+    name: r1
 
   #模块车间
   - platform: linptech_LVR910
     id: 80016CB6
-    name: b7
+    name: r7
   - platform: linptech_LVR910
     id: 80016BFC
-    name: b8
+    name: r8
   - platform: linptech_LVR910
     id: 80016C90
-    name: b9
+    name: r9
   - platform: linptech_LVR910
     id: 80016DD0
-    name: b10
+    name: r10
   - platform: linptech_LVR910
     id: 80016C65
-    name: b11
+    name: r11
   - platform: linptech_LVR910
     id: 80016C60
-    name: b12
+    name: r12
   - platform: linptech_LVR910
     id: 80016C5B
-    name: b13
+    name: r13
   - platform: linptech_LVR910
     id: 80016DAD
-    name: b14
+    name: r14
+  # 台灯
+  - platform: linptech_bulb
+    id: 800050EC
+    name: b1
+
 
 # Cloud
 # cloud:
