@@ -21,3 +21,13 @@ modules_light:
     - light.r12
     - light.r13
     - light.r14
+
+tab_office:
+  view: yes
+  name: 办公室灯
+  entities: group.office_light
+
+tab_modules:
+  view: yes
+  name: 模块车间灯
+  entities: group.modules_light
