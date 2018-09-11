@@ -110,8 +110,8 @@ sensor:
 #Support: At least generic
  
 linptech_dongle:
-  device: /dev/tty.SLAB_USBtoUART
-  #device: /dev/tty.SOC
+  #device: /dev/tty.SLAB_USBtoUART
+  device: /dev/ttyUSB0
 
 light:
   #办公室
@@ -177,5 +177,7 @@ panel_custom:
 
 
 group: !include groups.yaml
+
 automation: !include automations.yaml
+
 script: !include scripts.yaml

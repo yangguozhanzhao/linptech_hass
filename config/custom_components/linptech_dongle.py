@@ -13,7 +13,6 @@ from datetime import timedelta
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'linptech_dongle'
-REQUIREMENTS = ['pyserial==3.4']
 
 LINPTECH_DONGLE = None
 TIME_BETWEEN_UPDATES=timedelta(seconds=300)
