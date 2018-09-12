@@ -49,6 +49,7 @@ class LinptechLight(LinptechDevice, Light):
         self.dev_id = dev_id
         self._devname = devname
         self.type = '81'
+        self.get_state()
 
     @property
     def name(self):

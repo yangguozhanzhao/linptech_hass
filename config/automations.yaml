@@ -1,5 +1,5 @@
 #12:30和17:30 off 所有的灯
-- alias: 'Rule - turn off all_lights'
+- alias: "1-关闭所有的灯"
   trigger:
     - platform: time
       at: '12:30:00'
@@ -19,7 +19,7 @@
     entity_id: group.all_lights
 
 #08:00和13:00 on 所有的灯
-- alias: 'Rule - turn on all_lights'
+- alias: "2-打开所有的灯"
   trigger:
     - platform: time
       at: '08:00:00'
