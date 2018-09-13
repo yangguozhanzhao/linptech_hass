@@ -78,4 +78,6 @@ class LinptechLight(LinptechDevice, Light):
     def value_changed(self, val):
         """Update the internal state of this device."""
         self._on_state = bool(val != 0)
+        while not self.hass:
+            time.sleep(0.2)
         self.schedule_update_ha_state()

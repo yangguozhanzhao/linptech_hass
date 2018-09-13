@@ -100,4 +100,6 @@ class EnOceanLight(LinptechDevice, Light):
         """Update the internal state of this device."""
         #self._brightness = math.floor(val / 100.0 * 256.0)
         self._on_state = bool(val != 0)
+        while not self.hass:
+            time.sleep(0.2)
         self.schedule_update_ha_state()
