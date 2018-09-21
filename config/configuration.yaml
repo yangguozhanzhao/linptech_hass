@@ -32,14 +32,13 @@ config:
 # the developers to assist with development of Home Assistant.
 # For more information, please see:
 # https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-updater:
+#updater:
   # Optional, allows Home Assistant developers to focus on popular components.
   # include_used_components: true
 
 # Discover some devices automatically
-#discovery:
+discovery:
 # Allows you to issue voice commands from the frontend in enabled browsers
-conversation:
 
 # Enables support for tracking state changes over time
 history:
@@ -50,8 +49,7 @@ history:
 # Enables a map showing the location of tracked devices
 #map:
 
-# Track the sun
-#sun:
+
 
 # Weather prediction
 
@@ -142,23 +140,27 @@ light:
     id: 80016BFC
     name: r8
   - platform: linptech_LVR910
-    id: 80016C90
+    id: 80016fcd #80016C90
     name: r9
   - platform: linptech_LVR910
-    id: 80016DD0
+    id: 80016fcc #80016DD0
     name: r10
   - platform: linptech_LVR910
     id: 80016C65
     name: r11
   - platform: linptech_LVR910
-    id: 80016C60
+    id: 80016fc8 #80016C60
     name: r12
   - platform: linptech_LVR910
     id: 80016C5B
     name: r13
   - platform: linptech_LVR910
-    id: 80016DAD
-    name: r14
+    id: 80016fc9 #80016DAD
+    name: r14 
+  - platform: linptech_LVR910
+    id: 8000fdf4
+    name: patch1
+
   # 台灯
   - platform: linptech_bulb
     id: 800050EC
