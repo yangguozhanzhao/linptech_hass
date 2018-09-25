@@ -15,8 +15,6 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = 'linptech_dongle'
 
 LINPTECH_DONGLE = None
-global restartnum
-restartnum = 0
 TIME_BETWEEN_UPDATES=timedelta(seconds=300)
 
 CONFIG_SCHEMA = vol.Schema({
@@ -185,8 +183,7 @@ class LinptechSerial(threading.Thread):
 		self.receive = receive
 		# Internal variable for the Base ID of the module.
 		self.base_id = None
-		self.restartnum = restartnum
-		self.start_end_time = []
+		self.restartnum = 0
 		self.port = port
 		self.ser = serial.Serial(port, 57600, timeout=0.1)
 
@@ -196,12 +193,10 @@ class LinptechSerial(threading.Thread):
 	def rerun(self):
 		self.restartnum += 1
 		print("串口异常，重启次数：", self.restartnum)
-		if self.restartnum == 1 or self.restartnum == 11:
-			self.start_end_time.append(time.localtime(time.time()))
-		# if self.restartnum > 10:
-		# 	print("串口太不稳定了，请检查！！！", self.start_end_time)
-		# 	self.stop_flag.set()
-		# 	return 
+		if self.restartnum > 12:
+			print("串口太不稳定了，请检查！！！")
+			self.stop_flag.set()
+			return 
 		self.stop_flag.set()
 		self.stop_flag.clear()
 		self.run()
@@ -245,7 +240,6 @@ class LinptechSerial(threading.Thread):
 				except:
 					self.restartserial()
 					number = self.ser.inWaiting()
-					print("gggggggggggggggggggggggggggggggggg"*2, number)
 					pass
 				if number > 20:
 					self.logger.debug("numner=%s" % number)
