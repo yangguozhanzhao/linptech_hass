@@ -53,16 +53,6 @@ history:
 # Track the sun
 #sun:
 
-# Weather prediction
-
-# Text to speech
-# tts:
-#   - platform: google
-#     language: 'zh-cn'
-# sudo sed -i s/translate.google.com/translate.google.cn/g `grep translate.google.com -rl --include="*.py" /home/pi/.homeassistant /usr/local/lib`
-# mkdir -p /home/pi/.homeassistant/custom_components/tts
-# cp `grep translate.google.cn -rl --include="google.py" /usr/local/lib/python3.5/dist-packages/homeassistant/components/tts` /home/pi/.homeassistant/custom_components/tts
-
 
 sensor:
   #小米温湿度计
@@ -91,27 +81,13 @@ sensor:
     display_options:  #设置信息显示内容选项
       - 'time'
 
-# switch:
-#   - platform: xiaomi_miio
-#     name: "办公室"
-#     host:  192.168.1.228
-#     token: 364a603cd596d39e674f97badf430830
-#     switches:
-#       reciever:
-#         command_on: Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
-#         command_off: Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
 
-# hair_air:Z6XlACwCAABjBgAA0AsAAEMRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiMhAAEAAAEBAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAEBAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAQABAQEAAQEBAA
-# letv:Z6VHAC4CAACiBgAArwgAALsRAAA+IwAAVKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAAQEAAAEAAQABAAABAQAAAQABAAAAAAEAAQABAQEBBQJAA=
-# Device ID: 88224799
-#Model info: chuangmi.ir.v2
-#Address: 192.168.1.228
-#Token: 364a603cd596d39e674f97badf430830 via auto-token
-#Support: At least generic
- 
+########################## linptech 产品配置 ##############################
+
 linptech_dongle:
-  device: /dev/tty.SLAB_USBtoUART
+  #device: /dev/tty.SLAB_USBtoUART
   #device: /dev/ttyUSB0
+  device: COM3
 
 light:
   #办公室
@@ -163,10 +139,7 @@ light:
   - platform: linptech_bulb
     id: 800050EC
     name: b1
-
-
-# Cloud
-# cloud:
+########################## linptech 产品配置 ##############################
 
 # floorplan
 panel_custom:
@@ -175,9 +148,6 @@ panel_custom:
     sidebar_icon: mdi:home
     config: !include floorplan.yaml
 
-
 group: !include groups.yaml
-
 automation: !include automations.yaml
-
 script: !include scripts.yaml

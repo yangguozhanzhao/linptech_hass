@@ -8,7 +8,7 @@ import logging
 import math
 import time
 import voluptuous as vol
-
+import linptech.constant as CON
 from homeassistant.components.light import (
     Light, ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS, PLATFORM_SCHEMA)
 from homeassistant.const import (CONF_NAME, CONF_ID)
@@ -19,12 +19,10 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_SENDER_ID = 'sender_id'
 
-DEFAULT_NAME = 'Linptech Light'
+DEFAULT_NAME = 'Linptech R3AC'
 
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    # vol.Optional(CONF_ID, default=[]):
-    #     vol.All(cv.ensure_list, [vol.Coerce(int)]),
     vol.Required(CONF_ID):cv.string,
     vol.Optional(CONF_SENDER_ID,default=[]): vol.All(cv.ensure_list, [vol.Coerce(int)]),
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
@@ -48,7 +46,7 @@ class LinptechLight(LinptechDevice, Light):
         self._sender_id = sender_id
         self.dev_id = dev_id
         self._devname = devname
-        self.type = '81'
+        self.type = CON.receiver_type["R3AC"]
         self.get_state()
 
     @property
@@ -62,16 +60,22 @@ class LinptechLight(LinptechDevice, Light):
         return self._on_state
     
     def get_state(self):
-        command="1f"+self.dev_id+self.type+"01"
+        command = CON.packet_type["operate_state"] +self.dev_id+self.type+CON.receiver_channel["c1"]
         self.send_command(command)
 
     def turn_on(self, **kwargs):
-        command = "1f"+self.dev_id+self.type+"020101"
+        command = CON.packet_type["operate_state"]+\
+                self.dev_id+self.type+\
+                CON.cmd_type["control_state"]+\
+                CON.receiver_channel["c1"]+CON.receiver_state['on']
         self.send_command(command)
         self._on_state = True
 
     def turn_off(self, **kwargs):
-        command = "1f"+self.dev_id+self.type+"020100"
+        command = CON.packet_type["operate_state"]+\
+                self.dev_id+self.type+\
+                CON.cmd_type["control_state"]+\
+                CON.receiver_channel["c1"]+CON.receiver_state['off']
         self.send_command(command)
         self._on_state = False
 
