@@ -54,91 +54,87 @@ history:
 #sun:
 
 
-sensor:
-  #小米温湿度计
-  - platform: mitemp_bt 
-    mac: '4C:65:A8:D3:9F:46'
-    name: 温湿度
-    force_update: false
-    median: 3
-    monitored_conditions:
-      - temperature
-      - humidity
-  #天气信息
-  - platform: yr
-    name: Weather
-    #获得0小时后的数据
-    forecast: 0
-    monitored_conditions:
-      # 温度
-      - temperature
-      # 显示天气图标
-      - symbol
-      # 湿度
-      - humidity
-  # 日期时间
-  - platform: time_date  #设置工作平台为time_date
-    display_options:  #设置信息显示内容选项
-      - 'time'
+#~ sensor:
+  #~ #小米温湿度计
+  #~ - platform: mitemp_bt 
+    #~ mac: '4C:65:A8:D3:9F:46'
+    #~ name: 温湿度
+    #~ force_update: false
+    #~ median: 3
+    #~ monitored_conditions:
+      #~ - temperature
+      #~ - humidity
+  #~ #天气信息
+  #~ - platform: yr
+    #~ name: Weather
+    #~ #获得0小时后的数据
+    #~ forecast: 0
+    #~ monitored_conditions:
+      #~ # 温度
+      #~ - temperature
+      #~ # 显示天气图标
+      #~ - symbol
+      #~ # 湿度
+      #~ - humidity
+  #~ # 日期时间
+  #~ - platform: time_date  #设置工作平台为time_date
+    #~ display_options:  #设置信息显示内容选项
+      #~ - 'time'
 
 
 ########################## linptech 产品配置 ##############################
 
 linptech_dongle:
   #device: /dev/tty.SLAB_USBtoUART
-  #device: /dev/ttyUSB0
-  device: COM3
+  device: /dev/ttyUSB0
+  #device: COM3
 
 light:
   #办公室
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016C9E
     name: r4
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016D13
     name: r5
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016CB7
     name: r6
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016CA8
     name: r3
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016CAD
     name: r2
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016C94
     name: r1
 
   #模块车间
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016CB6
     name: r7
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016BFC
     name: r8
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016C90
     name: r9
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016DD0
     name: r10
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016C65
     name: r11
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016C60
     name: r12
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016C5B
     name: r13
-  - platform: linptech_LVR910
+  - platform: linptech_R3AC
     id: 80016DAD
     name: r14
-  # 台灯
-  - platform: linptech_bulb
-    id: 800050EC
-    name: b1
 ########################## linptech 产品配置 ##############################
 
 # floorplan

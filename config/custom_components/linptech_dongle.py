@@ -11,7 +11,6 @@ from homeassistant.helpers.event import track_time_interval
 from datetime import timedelta
 from linptech.serial_communicator import LinptechSerial
 
-_LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'linptech_dongle'
 
@@ -38,11 +37,11 @@ class LinptechDongle:
 	- send_commmand
 	- get command callback
 	"""
-	logger = logging.getLogger(__name__)
-	logger.setLevel(logging.DEBUG)
+	logging.getLogger().setLevel(logging.INFO)
 	def __init__(self, hass, ser):
 		"""Initialize the Linptech dongle."""
 		self._serial = LinptechSerial(port=ser,receive=self.receive)
+		self._serial.setDaemon(True)
 		self._serial.start()
 		self._devices = []
 		self.hass=hass
@@ -55,8 +54,9 @@ class LinptechDongle:
 
 	def send(self, data):
 		"""Send a command from the Linptech dongle."""
+		logging.debug("data=%s" % data)
 		self._serial.send(data)
-	
+
 	def update_devices_state(self,now):
 		"""send query command,get lights state"""
 		if self._devices:
@@ -64,7 +64,7 @@ class LinptechDongle:
 				device.get_state()
 
 	def receive(self,data,optional):
-		self.logger.info("data=%s,optional=%s" % (data,optional))
+		logging.debug("data=%s,optional=%s" % (data,optional))
 		for device in self._devices:
 			index = data.find((device.dev_id+device.type).lower())
 			if index>0:
