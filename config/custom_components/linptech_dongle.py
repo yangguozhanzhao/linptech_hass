@@ -183,10 +183,27 @@ class LinptechSerial(threading.Thread):
 		self.receive = receive
 		# Internal variable for the Base ID of the module.
 		self.base_id = None
+		self.restartnum = 0
+		self.port = port
 		self.ser = serial.Serial(port, 57600, timeout=0.1)
 
 	def stop(self):
 		self.stop_flag.set()
+	
+	def rerun(self):
+		self.restartnum += 1
+		print("串口异常，重启次数：", self.restartnum)
+		if self.restartnum > 12:
+			print("串口太不稳定了，请检查！！！")
+			self.stop_flag.set()
+			return 
+		self.stop_flag.set()
+		self.stop_flag.clear()
+		self.run()
+	
+	def restartserial(self):
+		time.sleep(5)
+		self.ser = serial.Serial(self.port, 57600, timeout=0.1)
 
 	def send(self, packet):
 		"对外接口，发送指令"
@@ -218,8 +235,12 @@ class LinptechSerial(threading.Thread):
 		self.logger.info('LinptechSerial started')
 		while not self.stop_flag.is_set():
 			try:
-				#time.sleep(0.01)
-				number = self.ser.inWaiting()
+				try:
+					number = self.ser.inWaiting()
+				except:
+					self.restartserial()
+					number = self.ser.inWaiting()
+					pass
 				if number > 20:
 					self.logger.debug("numner=%s" % number)
 					self.buffer += str(binascii.b2a_hex(self.ser.read(number)),encoding="utf-8")
@@ -230,7 +251,7 @@ class LinptechSerial(threading.Thread):
 					self.buffer=""
 			except serial.SerialException:
 				self.logger.error('Serial port exception! (device disconnected or multiple access on port?)')
-				self.stop()
+				self.rerun()
 			self.get_from_receive_queue()
 
 			# If there's messages in transmit queue
