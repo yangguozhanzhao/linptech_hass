@@ -56,6 +56,7 @@ class LinptechDongle:
 		"""Send a command from the Linptech dongle."""
 		logging.debug("data=%s" % data)
 		self._serial.send(data)
+		self._serial.send(data)
 
 	def update_devices_state(self,now):
 		"""send query command,get lights state"""
@@ -64,12 +65,11 @@ class LinptechDongle:
 				device.get_state()
 
 	def receive(self,data,optional):
-		logging.debug("data=%s,optional=%s" % (data,optional))
+		logging.info("data=%s,optional=%s" % (data,optional))
 		for device in self._devices:
 			index = data.find((device.dev_id+device.type).lower())
 			if index>0:
 				state=data[index+10:index+16]
-				print(int(state[-1]))
 				device.value_changed(int(state[-1]))
 
 class LinptechDevice():

@@ -24,10 +24,10 @@ modules_light:
 
 tab_office:
   view: yes
-  name: 办公室灯
+  name: 办公室
   entities: group.office_light
 
 tab_modules:
   view: yes
-  name: 模块车间灯
+  name: 模块车间
   entities: group.modules_light

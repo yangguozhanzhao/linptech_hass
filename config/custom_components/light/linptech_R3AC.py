@@ -48,6 +48,7 @@ class LinptechLight(LinptechDevice, Light):
         self._devname = devname
         self.type = CON.receiver_type["R3AC"]
         self.get_state()
+        print(self.icon)
 
     @property
     def name(self):
