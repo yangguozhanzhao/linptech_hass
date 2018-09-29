@@ -78,8 +78,9 @@ class LinptechDongle:
 				device.prev_send[1] += 1
 				time.sleep(0.02)
 			elif device.prev_send[1]>3:
-				device.rssi="##"
+				device.rssi="00"
 				device.prev_send=["",0]
+				device.value_changed()
 
 class LinptechDevice():
 	"""Parent class for all devices associated with the Linptech component.
