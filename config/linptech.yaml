@@ -1,0 +1,54 @@
+###################################################设备#######################
+linptech_dongle:
+  device: /dev/tty.SLAB_USBtoUART
+  #device: /dev/ttyS0
+  #device: COM3
+
+light:
+  #办公室
+  - platform: linptech_R3AC
+    id: 80016CB7
+    name: r6
+  - platform: linptech_R3AC
+    id: 80016D13
+    name: r5
+  - platform: linptech_R3AC
+    id: 80016fc7
+    name: r4
+  - platform: linptech_R3AC
+    id: 80016fd6
+    name: r3
+  - platform: linptech_R3AC
+    id: 80016CAD
+    name: r2
+  - platform: linptech_R3AC
+    id: 80016fd3
+    name: r1
+
+  #模块车间
+  - platform: linptech_R3AC
+    id: 80016fd2
+    name: r7
+  - platform: linptech_R3AC
+    id: 80016fd7
+    name: r8
+  - platform: linptech_R3AC
+    id: 80016fcc
+    name: r9
+  - platform: linptech_R3AC
+    id: 80016fcd
+    name: r10
+  - platform: linptech_R3AC
+    id: 80016fd1
+    name: r11
+  - platform: linptech_R3AC
+    id: 80016fd5
+    name: r12
+  - platform: linptech_R3AC
+    id: 80016fc8
+    name: r13
+  - platform: linptech_R3AC
+    id: 80016fc9
+    name: r14
+
+

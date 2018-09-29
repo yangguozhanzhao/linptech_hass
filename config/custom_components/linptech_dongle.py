@@ -56,21 +56,31 @@ class LinptechDongle:
 		"""Send a command from the Linptech dongle."""
 		logging.debug("data=%s" % data)
 		self._serial.send(data)
-		self._serial.send(data)
 
 	def update_devices_state(self,now):
 		"""send query command,get lights state"""
 		if self._devices:
 			for device in self._devices:
+				time.sleep(5)
 				device.get_state()
 
 	def receive(self,data,optional):
 		logging.info("data=%s,optional=%s" % (data,optional))
 		for device in self._devices:
-			index = data.find((device.dev_id+device.type).lower())
-			if index>0:
-				state=data[index+10:index+16]
+			if device.dev_id.lower()== data[2:10]:
+				device.prev_send=["",0]
+				state=data[16:18]
+				device.rssi="{0:>02}".format(int(optional[0:2],16))
 				device.value_changed(int(state[-1]))
+			elif device.prev_send[0] and device.prev_send[1] <= 3:
+				print("prev_send=%s,times=%d" % (device.prev_send[0],device.prev_send[1]))
+				self._serial.send(device.prev_send[0])
+				device.prev_send[1] += 1
+				time.sleep(0.02)
+			elif device.prev_send[1]>3:
+				device.rssi="00"
+				device.prev_send=["",0]
+				device.value_changed()
 
 class LinptechDevice():
 	"""Parent class for all devices associated with the Linptech component.

@@ -43,12 +43,14 @@ class LinptechLight(LinptechDevice, Light):
         """Initialize the linptech light source."""
         LinptechDevice.__init__(self)
         self._on_state = False
+        self.rssi="00"
+        self.prev_send=["",0]
         self._sender_id = sender_id
         self.dev_id = dev_id
         self._devname = devname
         self.type = CON.receiver_type["R3AC"]
+        time.sleep(1)
         self.get_state()
-        print(self.icon)
 
     @property
     def name(self):
@@ -63,6 +65,7 @@ class LinptechLight(LinptechDevice, Light):
     def get_state(self):
         command = CON.packet_type["operate_state"] +self.dev_id+self.type+CON.receiver_channel["c1"]
         self.send_command(command)
+        self.prev_send=[command,0]
 
     def turn_on(self, **kwargs):
         command = CON.packet_type["operate_state"]+\
@@ -70,6 +73,7 @@ class LinptechLight(LinptechDevice, Light):
                 CON.cmd_type["control_state"]+\
                 CON.receiver_channel["c1"]+CON.receiver_state['on']
         self.send_command(command)
+        self.prev_send=[command,0]
         self._on_state = True
 
     def turn_off(self, **kwargs):
@@ -78,11 +82,17 @@ class LinptechLight(LinptechDevice, Light):
                 CON.cmd_type["control_state"]+\
                 CON.receiver_channel["c1"]+CON.receiver_state['off']
         self.send_command(command)
+        self.prev_send=[command,0]
         self._on_state = False
 
-    def value_changed(self, val):
+    def value_changed(self, val=None):
         """Update the internal state of this device."""
-        self._on_state = bool(val != 0)
+        if val:
+            self._on_state = bool(val != 0)
+        if "rssi" in self._devname:
+            self._devname=self._devname[0:-2]+self.rssi
+        else:
+            self._devname=self._devname+",rssi="+self.rssi
         while not self.hass:
             time.sleep(0.2)
         self.schedule_update_ha_state()
