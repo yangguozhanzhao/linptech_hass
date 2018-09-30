@@ -87,7 +87,7 @@ class LinptechLight(LinptechDevice, Light):
 
     def value_changed(self, val=None):
         """Update the internal state of this device."""
-        if val:
+        if val is not None:
             self._on_state = bool(val != 0)
         if "rssi" in self._devname:
             self._devname=self._devname[0:-2]+self.rssi

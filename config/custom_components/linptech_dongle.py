@@ -61,7 +61,7 @@ class LinptechDongle:
 		"""send query command,get lights state"""
 		if self._devices:
 			for device in self._devices:
-				time.sleep(5)
+				time.sleep(2)
 				device.get_state()
 
 	def receive(self,data,optional):
@@ -72,12 +72,12 @@ class LinptechDongle:
 				state=data[16:18]
 				device.rssi="{0:>02}".format(int(optional[0:2],16))
 				device.value_changed(int(state[-1]))
-			elif device.prev_send[0] and device.prev_send[1] <= 3:
+			elif device.prev_send[0] and device.prev_send[1] <= 2:
 				print("prev_send=%s,times=%d" % (device.prev_send[0],device.prev_send[1]))
 				self._serial.send(device.prev_send[0])
 				device.prev_send[1] += 1
 				time.sleep(0.02)
-			elif device.prev_send[1]>3:
+			elif device.prev_send[1]>2:
 				device.rssi="00"
 				device.prev_send=["",0]
 				device.value_changed()
