@@ -15,6 +15,13 @@
 
 - 树莓派安装系统桌面版，`rpi-clone`
 - [hass服务在树莓派上开机自启动](https://www.home-assistant.io/docs/autostart/systemd/)，systemd，注意路径为绝对路径
+- chromium启动禁用双指缩放直接全屏 `/usr/bin/chromium-browser --kiosk --disable-pinch http://127.0.0.1:8123`,开机启动用`/home/pi/.config/autostart/my.desktop`
+
+```sehll
+[Desktop Entry]Type=Application
+Exec = xhost +
+Exec = chromium-browser --kiosk --disable-pinch http://127.0.0.1/
+```
 
 ## 3. 软件开发
 

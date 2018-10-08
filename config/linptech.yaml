@@ -51,4 +51,13 @@ light:
     id: 80016fc9
     name: r14
 
+  #四路测试
+  - platform: linptech_RX-4
+    id: 80012351
+    name: 四路1
+  - platform: linptech_RX-4
+    id: 80012353
+    name: 四路2
+
+
 
