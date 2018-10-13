@@ -35,6 +35,8 @@ http:
   # Secrets are defined in the file secrets.yaml
   api_password: !secret http_password
   server_port: 80
+  trusted_networks:
+    - 127.0.0.1
   # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
   #base_url: linptech.net:80
 

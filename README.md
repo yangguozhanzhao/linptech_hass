@@ -12,8 +12,8 @@
 ## 2. 安装配置说明
 
 - 树莓派安装系统桌面版，`rpi-clone`
-- [hass服务在树莓派上开机自启动](https://www.home-assistant.io/docs/autostart/systemd/)，systemd，注意路径为绝对路径
-- chromium启动禁用双指缩放直接全屏(没有直接连接触屏可以不配置) `/usr/bin/chromium-browser --kiosk --disable-pinch http://127.0.0.1:8123`,开机启动用`/home/pi/.config/autostart/my.desktop`
+- [hass服务在树莓派上开机自启动](https://www.home-assistant.io/docs/autostart/systemd/)，systemd，注意路径为绝对路径,user默认为root，不要设置
+- chromium启动禁用双指缩放直接全屏(没有直接连接触屏可以不配置) `/usr/bin/chromium-browser --kiosk --disable-pinch http://127.0.0.1`,开机启动用`/home/pi/.config/autostart/my.desktop`
 
 ```sehll
 [Desktop Entry]Type=Application
