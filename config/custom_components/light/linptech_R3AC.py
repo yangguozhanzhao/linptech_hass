@@ -4,7 +4,7 @@
 
 import logging
 import voluptuous as vol
-import linptech.constant as CON
+from linptech.constant import ReceiverType,ReceiverChannel
 
 from homeassistant.const import (CONF_NAME, CONF_ID)
 from custom_components.linptech_dongle import LinptechDevice,LinptechReceiver
@@ -27,4 +27,4 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     sender_id = config.get(CONF_SENDER_ID)
     dev_name = config.get(CONF_NAME)
     dev_id = config.get(CONF_ID)
-    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,CON.receiver_type['R3AC'],CON.receiver_channel['c1'])])
+    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,ReceiverType.R3AC,ReceiverChannel.c1)])

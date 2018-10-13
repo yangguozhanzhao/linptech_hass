@@ -6,7 +6,7 @@
 
 import logging
 import voluptuous as vol
-import linptech.constant as CON
+from linptech.constant import ReceiverType,ReceiverChannel
 
 from homeassistant.const import (CONF_NAME, CONF_ID)
 from custom_components.linptech_dongle import LinptechDevice,LinptechReceiver
@@ -29,7 +29,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     sender_id = config.get(CONF_SENDER_ID)
     dev_name = config.get(CONF_NAME)
     dev_id = config.get(CONF_ID)
-    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,CON.receiver_type['RX_4'],CON.receiver_channel['c1'])])
-    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,CON.receiver_type['RX_4'],CON.receiver_channel['c2'])])
-    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,CON.receiver_type['RX_4'],CON.receiver_channel['c3'])])
-    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,CON.receiver_type['RX_4'],CON.receiver_channel['c4'])])
+    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,ReceiverType.RX_4,ReceiverChannel.c1)])
+    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,ReceiverType.RX_4,ReceiverChannel.c2)])
+    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,ReceiverType.RX_4,ReceiverChannel.c3)])
+    add_devices([LinptechReceiver(sender_id, dev_name, dev_id,ReceiverType.RX_4,ReceiverChannel.c4)])

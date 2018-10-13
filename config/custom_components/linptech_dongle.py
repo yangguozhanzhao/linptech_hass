@@ -12,12 +12,12 @@ from datetime import timedelta
 from linptech.serial_communicator import LinptechSerial
 
 from homeassistant.components.light import Light
-import linptech.constant as CON
+from linptech.constant import PacketType,CmdType,State
 
 DOMAIN = 'linptech_dongle'
 
 LINPTECH_DONGLE = None
-TIME_BETWEEN_UPDATES=timedelta(seconds=300)
+TIME_BETWEEN_UPDATES=timedelta(seconds=600)
 
 CONFIG_SCHEMA = vol.Schema({
 	DOMAIN: vol.Schema({
@@ -39,7 +39,7 @@ class LinptechDongle:
 	- send_commmand
 	- get command callback
 	"""
-	logging.getLogger().setLevel(logging.INFO)
+	logging.getLogger().setLevel(logging.ERROR)
 	def __init__(self, hass, ser):
 		"""Initialize the Linptech dongle."""
 		self._serial = LinptechSerial(port=ser,receive=self.receive)
@@ -57,7 +57,12 @@ class LinptechDongle:
 	def send(self, data):
 		"""Send a command from the Linptech dongle."""
 		logging.info("data=%s" % data)
-		self._serial.send(data)
+		try:
+			self._serial.send(data)
+		except :
+			print("dongle send error")
+			pass
+		
 
 	def update_devices_state(self,now):
 		"""send query command,get lights state"""
@@ -68,21 +73,25 @@ class LinptechDongle:
 
 	def receive(self,data,optional):
 		logging.info("data=%s,optional=%s" % (data,optional))
-		for device in self._devices:
-			if device.dev_id.lower()== data[2:10]:
-				device.prev_send=["",0]
-				state=data[16:18]
-				device.rssi="{0:>02}".format(int(optional[0:2],16))
-				device.value_changed(state)
-			elif device.prev_send[0] and device.prev_send[1] <= 2:
-				print("prev_send=%s,times=%d" % (device.prev_send[0],device.prev_send[1]))
-				self._serial.send(device.prev_send[0])
-				device.prev_send[1] += 1
-				time.sleep(0.02)
-			elif device.prev_send[1]>2:
-				device.rssi="00"
-				device.prev_send=["",0]
-				device.value_changed()
+		try:
+			for device in self._devices:
+				if device.dev_id.lower()== data[2:10]:
+					device.prev_send=["",0]
+					state=data[16:18]
+					device.rssi="{0:>02}".format(int(optional[0:2],16))
+					device.value_changed(state)
+				elif device.prev_send[0] and device.prev_send[1] <= 2:
+					logging.info("prev_send=%s,times=%d" % (device.prev_send[0],device.prev_send[1]))
+					self._serial.send(device.prev_send[0])
+					device.prev_send[1] += 1
+					time.sleep(0.02)
+				elif device.prev_send[1]>2:
+					device.rssi="00"
+					device.prev_send=["",0]
+					device.value_changed()
+		except :
+			logging.info("dongle receive error")
+		
 
 # linptech device
 class LinptechDevice():
@@ -130,36 +139,51 @@ class LinptechReceiver(LinptechDevice, Light):
 		return self.on_state
 	
 	def get_state(self):
-		command = CON.packet_type["operate_state"] +self.dev_id+self.dev_type+self.dev_channel
-		self.send_command(command)
-		self.prev_send=[command,0]
+		try:
+			command = PacketType.state +self.dev_id+self.dev_type+self.dev_channel
+			self.send_command(command)
+			self.prev_send=[command,0]
+		except :
+			logging.error("receiver get_state error")
+			pass
+		
 
 	def turn_on(self, **kwargs):
-		command = CON.packet_type["operate_state"]+\
-				self.dev_id+self.dev_type+\
-				CON.cmd_type["control_state"]+\
-				self.dev_channel+self.dev_channel
-		self.send_command(command)
-		self.prev_send=[command,0]
-		self.on_state = True
+		try:
+			command = PacketType.state+self.dev_id+self.dev_type+\
+				CmdType.write_state+self.dev_channel+self.dev_channel
+			self.send_command(command)
+			self.prev_send=[command,0]
+			self.on_state = True
+		except :
+			logging.error("receiver turn on error")
+			pass
+		
 
 	def turn_off(self, **kwargs):
-		command = CON.packet_type["operate_state"]+\
-				self.dev_id+self.dev_type+\
-				CON.cmd_type["control_state"]+\
-				self.dev_channel+CON.receiver_state['off']
-		self.send_command(command)
-		self.prev_send=[command,0]
-		self.on_state = False
+		try:
+			command = PacketType.state+self.dev_id+self.dev_type+\
+				CmdType.write_state+self.dev_channel+State.off
+			self.send_command(command)
+			self.prev_send=[command,0]
+			self.on_state = False
+		except :
+			logging.error("receiver turn off error")
+		
 
 	def value_changed(self, val=None):
 		"""Update the internal state of this device."""
-		if val is not None:
-			self.on_state = bool(int(val,16)&int(self.dev_channel) == int(self.dev_channel))
-		if "rssi" in self.dev_name:
-			self.dev_name=self.dev_name[0:-2]+self.rssi
-		else:
-			self.dev_name=self.dev_name+self.dev_channel+",rssi="+self.rssi
-		while not self.hass:
-			time.sleep(0.2)
-		self.schedule_update_ha_state()
+		try:
+			if val is not None:
+				self.on_state = bool(int(val,16)&int(self.dev_channel) == int(self.dev_channel))
+			if "rssi" in self.dev_name:
+				self.dev_name=self.dev_name[0:-2]+self.rssi
+			else:
+				self.dev_name=self.dev_name+self.dev_channel+",rssi="+self.rssi
+			while not self.hass:
+				time.sleep(0.2)
+			self.schedule_update_ha_state()
+		except :
+			logging.error("receiver value changed error")
+			
+		
