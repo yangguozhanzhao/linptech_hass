@@ -15,6 +15,14 @@ homeassistant:
   packages: 
     pack_1: !include linptech.yaml
 
+  auth_providers:
+   - type: homeassistant
+   # Uncomment next line if you want to enable legacy API password support
+   # - type: legacy_api_password
+
+# Enable the auth component
+auth:
+
 # Show links to resources in log and frontend
 # introduction: 
 
@@ -26,8 +34,11 @@ config:
 http:
   # Secrets are defined in the file secrets.yaml
   api_password: !secret http_password
+  server_port: 80
+  trusted_networks:
+    - 127.0.0.1
   # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-  # base_url: example.duckdns.org:8123
+  #base_url: linptech.net:80
 
 # Checks for available updates
 # Note: This component will send some information about your system to

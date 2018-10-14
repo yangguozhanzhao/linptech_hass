@@ -1,6 +1,4 @@
-"""
-copy from enocean
-"""
+
 import logging
 import voluptuous as vol
 import time
@@ -9,15 +7,18 @@ from homeassistant.const import CONF_DEVICE
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import track_time_interval
 from datetime import timedelta
+
+REQUIREMENTS = ['linptech==0.1.7']
 from linptech.serial_communicator import LinptechSerial
 
-from homeassistant.components.light import Light
-import linptech.constant as CON
+_LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'linptech_dongle'
 
 LINPTECH_DONGLE = None
-TIME_BETWEEN_UPDATES=timedelta(seconds=300)
+TIME_BETWEEN_UPDATES=timedelta(seconds=600)
+
+logging.getLogger().setLevel(logging.ERROR)
 
 CONFIG_SCHEMA = vol.Schema({
 	DOMAIN: vol.Schema({
@@ -34,12 +35,13 @@ def setup(hass, config):
 	return True
 
 class LinptechDongle:
+
 	"""Representation of an Linptech dongle:
 	- register device
 	- send_commmand
 	- get command callback
 	"""
-	logging.getLogger().setLevel(logging.INFO)
+	
 	def __init__(self, hass, ser):
 		"""Initialize the Linptech dongle."""
 		self._serial = LinptechSerial(port=ser,receive=self.receive)
@@ -57,7 +59,12 @@ class LinptechDongle:
 	def send(self, data):
 		"""Send a command from the Linptech dongle."""
 		logging.info("data=%s" % data)
-		self._serial.send(data)
+		try:
+			self._serial.send(data)
+		except :
+			print("dongle send error")
+			pass
+		
 
 	def update_devices_state(self,now):
 		"""send query command,get lights state"""
@@ -68,21 +75,25 @@ class LinptechDongle:
 
 	def receive(self,data,optional):
 		logging.info("data=%s,optional=%s" % (data,optional))
-		for device in self._devices:
-			if device.dev_id.lower()== data[2:10]:
-				device.prev_send=["",0]
-				state=data[16:18]
-				device.rssi="{0:>02}".format(int(optional[0:2],16))
-				device.value_changed(state)
-			elif device.prev_send[0] and device.prev_send[1] <= 2:
-				print("prev_send=%s,times=%d" % (device.prev_send[0],device.prev_send[1]))
-				self._serial.send(device.prev_send[0])
-				device.prev_send[1] += 1
-				time.sleep(0.02)
-			elif device.prev_send[1]>2:
-				device.rssi="00"
-				device.prev_send=["",0]
-				device.value_changed()
+		try:
+			for device in self._devices:
+				if device.r_id.lower()== data[2:10]:
+					device.prev_send=["",0]
+					state=data[16:18]
+					device.rssi="{0:>02}".format(int(optional[0:2],16))
+					device.value_changed(state)
+				elif device.prev_send[0] and device.prev_send[1] <= 2:
+					logging.info("prev_send=%s,times=%d" % (device.prev_send[0],device.prev_send[1]))
+					self._serial.send(device.prev_send[0])
+					device.prev_send[1] += 1
+					time.sleep(0.02)
+				elif device.prev_send[1]>2:
+					device.rssi="00"
+					device.prev_send=["",0]
+					device.value_changed()
+		except :
+			logging.info("dongle receive error")
+		
 
 # linptech device
 class LinptechDevice():
@@ -100,66 +111,3 @@ class LinptechDevice():
 	def send_command(self, command):
 		"""send a command via the linptech dongle."""
 		LINPTECH_DONGLE.send(command)
-
-# linptech receiver
-class LinptechReceiver(LinptechDevice, Light):
-	"""Representation of an linptech light source."""
-	def __init__(self, sender_id, dev_name,dev_id,dev_type,dev_channel):
-		"""Initialize the linptech light source."""
-		LinptechDevice.__init__(self)
-		self.on_state = False
-		self.rssi="00"
-		self.prev_send=["",0]
-
-		self.sender_id = sender_id
-		self.dev_id = dev_id
-		self.dev_name = dev_name
-		self.dev_type = dev_type
-		self.dev_channel=dev_channel
-		time.sleep(1)
-		self.get_state()
-
-	@property
-	def name(self):
-		"""Return the name of the device if any."""
-		return self.dev_name
-
-	@property
-	def is_on(self):
-		"""If light is on."""
-		return self.on_state
-	
-	def get_state(self):
-		command = CON.packet_type["operate_state"] +self.dev_id+self.dev_type+self.dev_channel
-		self.send_command(command)
-		self.prev_send=[command,0]
-
-	def turn_on(self, **kwargs):
-		command = CON.packet_type["operate_state"]+\
-				self.dev_id+self.dev_type+\
-				CON.cmd_type["control_state"]+\
-				self.dev_channel+self.dev_channel
-		self.send_command(command)
-		self.prev_send=[command,0]
-		self.on_state = True
-
-	def turn_off(self, **kwargs):
-		command = CON.packet_type["operate_state"]+\
-				self.dev_id+self.dev_type+\
-				CON.cmd_type["control_state"]+\
-				self.dev_channel+CON.receiver_state['off']
-		self.send_command(command)
-		self.prev_send=[command,0]
-		self.on_state = False
-
-	def value_changed(self, val=None):
-		"""Update the internal state of this device."""
-		if val is not None:
-			self.on_state = bool(int(val,16)&int(self.dev_channel) == int(self.dev_channel))
-		if "rssi" in self.dev_name:
-			self.dev_name=self.dev_name[0:-2]+self.rssi
-		else:
-			self.dev_name=self.dev_name+self.dev_channel+",rssi="+self.rssi
-		while not self.hass:
-			time.sleep(0.2)
-		self.schedule_update_ha_state()
