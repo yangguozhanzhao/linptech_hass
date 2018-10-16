@@ -93,7 +93,20 @@ history:
   #~ - platform: time_date  #设置工作平台为time_date
     #~ display_options:  #设置信息显示内容选项
       #~ - 'time'
-
+camera:
+  - platform: generic
+    name: linptech
+    still_image_url: >
+      {% if now().second<20 %}
+        https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/001.jpeg
+      {% else %}
+        {% if now().second<40  %}
+          https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/002.jpeg
+        {% else %}
+          https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/003.jpeg
+        {% endif %}
+      {% endif %}
+      
 # floorplan
 panel_custom:
   - name: floorplan
@@ -105,3 +118,4 @@ panel_custom:
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
+
