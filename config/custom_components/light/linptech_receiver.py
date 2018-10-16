@@ -17,7 +17,7 @@ CONF_SENDER_ID = 'transmitors'
 CONF_CHANNEL="channel"
 DEFAULT_NAME = 'Linptech Receiver'
 
-from linptech.constant import PacketType,CmdType,State,ReceiverChannel,ReceiverType
+from linptech.constant import CmdType,State,ReceiverChannel,ReceiverType,PacketType
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 	vol.Required(CONF_ID):cv.string,
 	vol.Optional(CONF_SENDER_ID,default=[]): vol.All(cv.ensure_list, [vol.Coerce(int)]),

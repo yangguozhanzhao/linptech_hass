@@ -5,10 +5,81 @@ linptech_dongle:
   #device: COM3
 
 light:
-  #办公室
   - platform: linptech_receiver
     id: 80017337
-    name: 1
+    name: r1 #打标机
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 8001734d
+    name: r5 #程小鹏
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 80017354
+    name: r6 #会议桌
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 80017357
+    name: r2 #程哥
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 8001734e
+    name: r4 #李康
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 80017306
+    name: r3 #打印机
+    type: "81"
+    channel: "01"
+
+  # 模块车间
+  - platform: linptech_receiver
+    id: 800172ea
+    name: r7 #1号
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 800172f7
+    name: r8 #2号
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 80017315
+    name: r9 #3号
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 80017311
+    name: r10 #4号
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 8001730b
+    name: r11 #5号
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 80017304
+    name: r12 #6号
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 800173ba
+    name: r13 #7号
+    type: "81"
+    channel: "01"
+  - platform: linptech_receiver
+    id: 80017309
+    name: r14 #8号
+    type: "81"
+    channel: "01"
+
+  
+
 
   #四路测试
   - platform: linptech_receiver
