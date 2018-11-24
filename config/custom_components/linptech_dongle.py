@@ -7,6 +7,7 @@ from homeassistant.const import CONF_DEVICE
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import track_time_interval
 from datetime import timedelta
+from homeassistant.components.light import Light
 
 REQUIREMENTS = ['linptech==0.1.7']
 from linptech.serial_communicator import LinptechSerial
@@ -48,6 +49,8 @@ class LinptechDongle:
 		self._serial.setDaemon(True)
 		self._serial.start()
 		self._devices = []
+		self._emitter = None
+		self._emitteridlist = []
 		self.hass=hass
 		track_time_interval(self.hass,self.update_devices_state, TIME_BETWEEN_UPDATES)
 
@@ -55,6 +58,9 @@ class LinptechDongle:
 	def register_device(self, dev):
 		"""Register another device."""
 		self._devices.append(dev)
+
+	def register_emitter(self, dev):
+		self._emitter = dev
 
 	def send(self, data):
 		"""Send a command from the Linptech dongle."""
@@ -91,6 +97,10 @@ class LinptechDongle:
 					device.rssi="00"
 					device.prev_send=["",0]
 					device.value_changed()
+				else:
+					if not(data[2:10] in self._emitteridlist) and data[2:3] != "8":
+						self._emitteridlist.append(data[2:10])
+						self._emitter.change_id_list(data[2:10])
 		except :
 			logging.info("dongle receive error")
 		
@@ -105,7 +115,10 @@ class LinptechDevice():
 		"""Initialize linptech device."""
 		while not LINPTECH_DONGLE:
 			time.sleep(0.5)
-		LINPTECH_DONGLE.register_device(self)
+		if isinstance(self, Light):
+			LINPTECH_DONGLE.register_device(self)
+		else:
+			LINPTECH_DONGLE.register_emitter(self)
 
 	# get command from linptech dongle
 	def send_command(self, command):

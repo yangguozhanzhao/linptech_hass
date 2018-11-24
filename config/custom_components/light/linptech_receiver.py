@@ -16,6 +16,7 @@ REQUIREMENTS = ['linptech==0.1.7']
 CONF_SENDER_ID = 'transmitors'
 CONF_CHANNEL="channel"
 DEFAULT_NAME = 'Linptech Receiver'
+LIGHT_ID = "light_id"
 
 from linptech.constant import CmdType,State,ReceiverChannel,ReceiverType,PacketType
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
@@ -28,7 +29,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
-	"""Set up the linptech light platform."""
+	"""Set up the linptech light platform."""	
 	t_id = config.get(CONF_SENDER_ID)
 	r_name = config.get(CONF_NAME)
 	r_id = config.get(CONF_ID)
@@ -64,6 +65,14 @@ class LinptechReceiver(LinptechDevice, Light):
 	def is_on(self):
 		"""If light is on."""
 		return self.on_state
+
+	@property
+	def device_state_attributes(self):
+		"""设置灯的ID，作为其他属性."""
+		return {
+			LIGHT_ID: self.r_id,
+		}
+
 	
 	def get_state(self):
 		try:
