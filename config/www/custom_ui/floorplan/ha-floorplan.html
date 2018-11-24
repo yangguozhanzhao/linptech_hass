@@ -488,7 +488,6 @@
     */
     handleEntities(entities) {
       let svg = this.$.floorplan.querySelector('svg');
-      console.log("handleEntities :", svg)
       for (let entityId in entities) {
         let entityState = entities[entityId];
         let entityConfig = this.entityConfigs[entityId];
@@ -893,7 +892,6 @@
           if (!data.entity_id) {
             data['entity_id'] = entityId;
           }
-          console.log("callService :", domain, action.service, data)
           this.instance.hass.callService(domain, action.service, data);
         }
         else {
@@ -1119,6 +1117,7 @@
   }
 
   function pushmatchingidlist(value) {
+    // 过滤初始值
     if(value != "00000000") {
       if (matching_list.length == 0){
         matching_list.push(value)
@@ -1140,10 +1139,8 @@
     }
   }
 
+  // 点击配对按钮 调用配对服务
   function clickmatching() {
-    console.log("clickmatching :", matching_list)
-    console.log("HaFloorplanInit:", $(HaFloorplanInit))
-    console.log('patchService: ', patchService)
     patchService.callService('light', 'matching_id', {entity_id: matching_list})
   }
 
