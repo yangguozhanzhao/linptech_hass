@@ -47,15 +47,15 @@
       </div>
     </template>
 
-    <div id="receiveids">发射器选择:
+    <div id="receiveids">接收器选择:
       <select name='receiveidselect' onchange="changereceiveid(this.value)">
-          <option value ="00000000">发射器选择</option>
+          <option value ="00000000">接收器选择</option>
       </select>
     </div>
 
-    <div id="emitterids">接收器选择:
+    <div id="emitterids">发射器选择:
       <select name='emitteridselect' onchange="changeemitterid(this.value)">
-          <option value ="00000000">接收器选择</option>
+          <option value ="00000000">发射器选择</option>
       </select>
     </div>
 
@@ -169,9 +169,11 @@
         }
       }
       if(newHass){
+        console.log("entity entity entity:", newHass.states)
         for(let newentityId in newHass.states){
           let entity = newHass.states[newentityId]
-          if(entity.entity_id == "light.emitter" && entity.state && !(this.emitterIdList.indexOf(entity.state) > -1)){
+          
+          if(entity.entity_id == "switch.emitter" && entity.state && !(this.emitterIdList.indexOf(entity.state) > -1)){
             this.emitterIdList.push(entity.state)
             this.emitteridlist(`'${entity.state}'`);
           }
@@ -1116,32 +1118,22 @@
     pushmatchingidlist(value)
   }
 
+  // matching_list = ["发射器ID", "接收器ID"]
   function pushmatchingidlist(value) {
     // 过滤初始值
     if(value != "00000000") {
-      if (matching_list.length == 0){
-        matching_list.push(value)
+      if (value.substring(0, 1) == "0"){
+        matching_list[0] = value
       }
-      else if(matching_list.length == 1){
-        if (matching_list[0][0] == value[0]) {
-          matching_list[0] = value
-        }else {
-          matching_list.push(value)
-        }
-      }
-      else if(matching_list.length > 1){
-        for(let index in matching_list){
-          if (matching_list[index][0] == value[0]){
-            matching_list[index] = value
-          }
-        }
+      else if(value.substring(0, 1) == "8"){
+        matching_list[1] = value
       }
     }
   }
 
   // 点击配对按钮 调用配对服务
   function clickmatching() {
-    patchService.callService('light', 'matching_id', {entity_id: matching_list})
+    patchService.callService('switch', 'matching_id', {entity_id: matching_list})
   }
 
 </script>

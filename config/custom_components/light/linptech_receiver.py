@@ -9,9 +9,9 @@ from homeassistant.const import (CONF_NAME, CONF_ID,CONF_TYPE)
 from custom_components.linptech_dongle import LinptechDevice
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.light import PLATFORM_SCHEMA
-
 from homeassistant.components.light import Light
 import time
+
 REQUIREMENTS = ['linptech==0.1.7']
 CONF_SENDER_ID = 'transmitors'
 CONF_CHANNEL="channel"
@@ -39,9 +39,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
 # linptech receiver
 class LinptechReceiver(LinptechDevice, Light):
-
 	"""Representation of an linptech light source."""
-	def __init__(self, t_id, r_name,r_id,r_type,r_channel):
+	def __init__(self, t_id, r_name, r_id,r_type,r_channel):
 		"""Initialize the linptech light source."""
 		LinptechDevice.__init__(self)
 		self.on_state = False

@@ -4,12 +4,7 @@ linptech_dongle:
   #device: /dev/ttyS0
   #device: COM3
 
-
-
 light:
-  # 发射器ID容器
-  - platform: linptech_emitter
-
   # 接收器
   - platform: linptech_receiver
     id: 80017337
@@ -109,6 +104,10 @@ light:
     type: "84"
     channel: "08"
 
+
+switch:
+  # 发射器ID容器
+  - platform: linptech_emitter
 
 
 
