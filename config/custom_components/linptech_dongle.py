@@ -7,6 +7,8 @@ from homeassistant.const import CONF_DEVICE
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import track_time_interval
 from datetime import timedelta
+from homeassistant.components.light import Light
+from homeassistant.helpers.entity import ToggleEntity
 
 REQUIREMENTS = ['linptech==0.1.7']
 from linptech.serial_communicator import LinptechSerial
@@ -48,6 +50,8 @@ class LinptechDongle:
 		self._serial.setDaemon(True)
 		self._serial.start()
 		self._devices = []
+		self._emitter = None
+		self._emitteridlist = []
 		self.hass=hass
 		track_time_interval(self.hass,self.update_devices_state, TIME_BETWEEN_UPDATES)
 
@@ -71,11 +75,17 @@ class LinptechDongle:
 		if self._devices:
 			for device in self._devices:
 				time.sleep(2)
-				device.get_state()
+				if isinstance(device, Light):
+					device.get_state()
 
 	def receive(self,data,optional):
 		logging.info("data=%s,optional=%s" % (data,optional))
 		try:
+			if not self._emitter :
+				for device in self._devices:
+					if not isinstance(device, Light):
+						self._emitter = device
+						
 			for device in self._devices:
 				if device.r_id.lower()== data[2:10]:
 					device.prev_send=["",0]
@@ -91,6 +101,12 @@ class LinptechDongle:
 					device.rssi="00"
 					device.prev_send=["",0]
 					device.value_changed()
+				else:
+					if not(data[2:10] in self._emitteridlist) and (data[2:3] != "8"):
+						print("data data data:", data[2:10])
+						print("self._emitter :", self._emitter)
+						self._emitteridlist.append(data[2:10])
+						self._emitter.change_id_list(data[2:10])
 		except :
 			logging.info("dongle receive error")
 		
@@ -105,6 +121,7 @@ class LinptechDevice():
 		"""Initialize linptech device."""
 		while not LINPTECH_DONGLE:
 			time.sleep(0.5)
+
 		LINPTECH_DONGLE.register_device(self)
 
 	# get command from linptech dongle

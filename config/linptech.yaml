@@ -5,6 +5,7 @@ linptech_dongle:
   #device: COM3
 
 light:
+  # 接收器
   - platform: linptech_receiver
     id: 80017337
     name: r1 #打标机
@@ -103,6 +104,10 @@ light:
     type: "84"
     channel: "08"
 
+
+switch:
+  # 发射器ID容器
+  - platform: linptech_emitter
 
 
 

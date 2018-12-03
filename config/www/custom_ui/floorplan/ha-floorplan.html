@@ -47,11 +47,21 @@
       </div>
     </template>
 
-    <div id="errors">
-      <ul></ul>
+    <div id="receiveids">接收器选择:
+      <select name='receiveidselect' onchange="changereceiveid(this.value)">
+          <option value ="00000000">接收器选择</option>
+      </select>
     </div>
 
-    <div id="warnings">
+    <div id="emitterids">发射器选择:
+      <select name='emitteridselect' onchange="changeemitterid(this.value)">
+          <option value ="00000000">发射器选择</option>
+      </select>
+    </div>
+
+    <button type="button" onclick="clickmatching()">配对</button>
+
+    <div id="errors">
       <ul></ul>
     </div>
 
@@ -66,6 +76,8 @@
 </dom-module>
 
 <script>
+  var matching_list = []
+  var patchService = null
 
   class HaFloorplan extends Polymer.Element {
     static get is() { return 'ha-floorplan'; }
@@ -111,12 +123,23 @@
           type: Boolean,
           value: false,
         },
+        receiveIdList:{
+          type: Array,
+          value: () => { return ["unknown"]; },
+        },
+        emitterIdList:{
+          type: Array,
+          value: () => { return ["unknown"]; },
+        },
       };
     }
 
+    // hass 对应的是hass对象
+    // config 对应的是floorplan.yaml文件的内容
+
+    //初始化时被触发。
     connectedCallback() {
       super.connectedCallback();
-
       if (!this.isInitialized) {
         this.initFloorplan();
       }
@@ -125,11 +148,42 @@
     stopPropagation(e) {
       e.stopPropagation();
     }
-
+    
+    // 页面变化时的监听回调函数
     hassChanged(newHass, oldHass) {
+      if(oldHass) {
+        for (let newentityId in newHass.states) {
+          let entity = newHass.states[newentityId]
+          let newentitystate = entity.state;
+          let newentityid = entity.entity_id;
+          let newentitylightid = entity.attributes.light_id ? entity.attributes.light_id : null;
+          for (let oldentityId in oldHass.states) {
+            let entity = oldHass.states[oldentityId]
+            let oldentitystate = entity.state;
+            let oldentityid = entity.entity_id;
+            if (newentityid == oldentityid && newentitystate != oldentitystate && newentitylightid && !(this.receiveIdList.indexOf(newentitylightid) > -1)) {
+              this.receiveIdList.push(newentitylightid)
+              this.receiveidlist(`'${newentitylightid}'`);
+            }
+          }
+        }
+      }
+      if(newHass){
+        console.log("entity entity entity:", newHass.states)
+        for(let newentityId in newHass.states){
+          let entity = newHass.states[newentityId]
+          
+          if(entity.entity_id == "switch.emitter" && entity.state && !(this.emitterIdList.indexOf(entity.state) > -1)){
+            this.emitterIdList.push(entity.state)
+            this.emitteridlist(`'${entity.state}'`);
+          }
+        }
+      }
       this.handleEntities(newHass.states);
     }
 
+    //实例化面板，进行检查floorplan.yaml配置
+    //检查没问题 进行handleEntities
     initFloorplan() {
       this.isInitialized = true;
 
@@ -157,7 +211,6 @@
 
       this.hass.connection.socket.addEventListener('message', event => {
         let data = JSON.parse(event.data);
-
         // Store the time difference between the local web browser and the Home Assistant server
         if (data.event && data.event.time_fired) {
           let lastEventFiredTime = moment(data.event.time_fired).toDate();
@@ -165,18 +218,21 @@
         }
       });
 
+
       this.addExternalCss(() => {
         this.loadFloorPlan(() => {
           this.isLoading = false;
           this.handleEntities(this.hass.states);
         });
       });
+      
 
       if (this.config.groups.find(entityGroup => entityGroup.state_transitions)) {
-        setInterval(this.updateStateTransitions.bind(this), 100);
+        setInterval(this.updateStateTransitions.bind(this), 100);  //以毫秒计
       }
     }
-
+    
+    //监听全局错误，并显示在面板<div id="errors">位置上
     handleWindowError(msg, url, lineNo, columnNo, error) {
       if (msg.toLowerCase().indexOf("script error") >= 0) {
         this.error('Script error: See browser console for detail');
@@ -194,14 +250,18 @@
 
       return false;
     }
-
+    
+    // 加载css样式内容
+    // stylesheet在floorplan.yaml中就是css文件的路径
     addExternalCss(callback) {
       if (!this.config.stylesheet) {
         callback();
       }
 
+      // 数据释明this.config.stylesheet：/local/custom_ui/floorplan/floorplan.css
       this.loadStyleSheet(this.config.stylesheet + '?cacheBuster=' + (new Date().getTime()), function (success, link) {
         if (success) {
+          patchService = this.instance.hass
           this.instance.root.appendChild(link);
           let styleSheet = link['sheet'];
           setTimeout(() => {
@@ -214,29 +274,33 @@
         }
       }.bind({ instance: this, callback: callback }));
     }
-
+    
+    // 通过请求加载远程数据, 加载svg文件内容。
     loadFloorPlan(callback) {
       jQuery.ajax({
         url: this.config.image + '?cacheBuster=' + (new Date().getTime()),
         success: function (result) {
+          // 加载floorplan.svg文件内容
           let svg = $(result).find('svg')[0];
-
           $(svg).height('100%');
           $(svg).width('100%');
           $(svg).css('position', this.instance.isPanel ? 'absolute' : 'relative');
           $(svg).css('cursor', 'default');
-
+          
+          // this.instance: <ha-floorplan is-panel></ha-floorpanel>
+          // this.instance.$.floorplan：<div id="floorplan"></div>
           this.instance.$.floorplan.appendChild(svg);
-
           let uniqueId = (new Date()).getTime();
 
+          // 返回所有的后代元素，然后转化为数组形式 [<defs id="defs3875"></defs>, ...]
           let svgElements = $(svg).find('*').toArray();
 
+          // this.instance.config对应floorplan.yaml内容
           let elementGroups = this.instance.config.groups.filter(x => x.elements);
+          // elementGroups=[]
           for (let elementGroup of elementGroups) {
             for (let elementId of elementGroup.elements) {
               let svgElement = $(svg).find(`[id="${elementId}"]`);
-
               if (svgElement.length) {
                 $(svgElement).on('click', this.instance.onElementClick.bind({ instance: this.instance, elementId: elementId }));
                 $(svgElement).css('cursor', 'pointer');
@@ -260,10 +324,14 @@
             }
           }
 
+          // entityGroups: [name:Lights, entities:["light.r1", "light.r2"...]  .....]
           let entityGroups = this.instance.config.groups.filter(x => x.entities);
           for (let entityGroup of entityGroups) {
+
+            // 用于存放实体，如light.r1, light.r2 ......
             let targetEntityIds = [];
 
+            // entityGroup.groups : undefined
             // Split out HA entity groups into separate entities
             if (entityGroup.groups) {
               for (let entityId of entityGroup.groups) {
@@ -279,15 +347,17 @@
               }
             }
 
+            // entityGroup.entities: ["light.r1", "light.r2", "light.r3" ...]
             // HA entities treated as is
             if (entityGroup.entities) {
               for (let entityId of entityGroup.entities) {
+                // 获取单个实体信息，如“light.rn”的一些基本属性
                 let entity = this.instance.hass.states[entityId];
                 if (entity) {
                   targetEntityIds.push(entityId);
                 }
                 else {
-                  this.instance.warn(`Cannot find '${entityId}' in HA group configuration`);
+                  this.instance.warn(`Cannooot find '${entityId}' in HA group configuration`);
                 }
               }
             }
@@ -299,15 +369,19 @@
                 lastChangedTime: undefined,
                 svgElementConfigs: {},
                 imageUrl: undefined
-              };
+              }
 
+              // 所有实体配置表，以“light.rn”做为键值
               this.instance.entityConfigs[entityId] = entityConfig;
-
+              
+              // 从svgElements中获取id与entityId相同的Element，也就获取svg文件中每个light.rn的属性
               let svgElement = svgElements.find(svgElement => svgElement.id === entityId);
               if (!svgElement) {
                 this.instance.warn(`Cannot find element '${entityId}' in SVG file`);
                 continue;
               }
+              
+
 
               entityConfig.svgElementConfigs[svgElement.id] = {
                 svgElementId: svgElement.id,
@@ -334,17 +408,20 @@
                 let svgElementConfig = entityConfig.svgElementConfigs[svgElementId];
 
                 let svgElement = $(svgElementConfig.svgElement);
+                
 
                 // Create a title element (to support hover over text)
                 svgElement.append(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
-
+                
+                
                 if (svgElement.length) {
                   svgElementConfig.svgElement = svgElement[0];
-
+                  
+                  // 点击监听
                   $(svgElement).on('click', this.instance.onEntityClick.bind({ instance: this.instance, entityId: entityId }));
                   $(svgElement).css('cursor', 'pointer');
                   $(svgElement).addClass('ha-entity');
-
+                  
                   if ((svgElement[0].nodeName === 'text') && (svgElement[0].id === entityId)) {
                     let boundingBox = svgElement[0].getBBox();
                     let rect = $(document.createElementNS("http://www.w3.org/2000/svg", 'rect'))
@@ -379,26 +456,55 @@
         }.bind({ instance: this, callback: callback })
       });
     }
+    
 
+    /*
+    处理状态变化
+    数据示例：
+      entities = {
+        camera.linptech = {
+          entity_id: "camera.linptech", 
+          state: "idle", 
+          attributes: {friendly_name: "linptech", ...}
+          last_changed: "2018-11-14T09:28:05.514788+00:00", 
+          last_updated: "2018-11-14T09:28:05.514788+00:00",
+          ......
+        },
+        ......
+      },
+
+      entityConfig.svgElementConfigs = {
+        group.modules_light: {
+          svgElementId: "group.modules_light", 
+          svgElement: <text id="group.modules_light">, 
+          clonedsvgElement: <text id="group.modules_light">, 
+          entityId: "group.modules_light"
+        },
+        tspan7902-6-3-9-6-3: {
+          svgElementId: "tspan7902-6-3-9-6-3", 
+          svgElement: <tspan id="tspan7902-6-3-9-6-3">, 
+          clonedsvgElement: <tspan id="tspan7902-6-3-9-6-3">, 
+          entityId: "group.modules_light"
+        }
+      }
+    */
     handleEntities(entities) {
       let svg = this.$.floorplan.querySelector('svg');
-
       for (let entityId in entities) {
         let entityState = entities[entityId];
-
         let entityConfig = this.entityConfigs[entityId];
         if (!entityConfig)
           continue;
 
         entityConfig.lastState = entityState.state;
-
         for (let svgElementId in entityConfig.svgElementConfigs) {
           let svgElementConfig = entityConfig.svgElementConfigs[svgElementId];
           let svgElement = svgElementConfig.svgElement;
 
           if (!svgElement)
             continue;
-
+          
+          //设置灰色小面板的信息
           this.setHoverOverText(svgElement, entityState);
 
           if (svgElement.nodeName === 'text') {
@@ -527,6 +633,7 @@
       }
     }
 
+    // 设置灰色小面板的信息内容（光标放在灯图上时，出现的小面板）
     setHoverOverText(element, entityState) {
       let title = $(element).find('title');
       if (title.length) {
@@ -539,7 +646,8 @@
         $(title).html(titleText);
       }
     }
-
+    
+    //加载svg图
     loadImage(imageUrl, entityId, entityState, callback) {
       let svg = this.$.floorplan.querySelector('svg');
       jQuery.ajax({
@@ -584,7 +692,6 @@
       }
 
       if (!$(svgElement).hasClass(className)) {
-        //console.log(`${entityId}: adding class "${className}" for current state "${entityState.state}" (${svgElement.id})`);
         $(svgElement).addClass(className);
 
         if ((svgElement.nodeName === 'text')) {
@@ -600,7 +707,6 @@
 
     removeClasses(entityId, svgElement, classes) {
       for (let className of classes) {
-        //console.log(`${entityId}: removing class "${className}" (${svgElement.id})`);
         if ($(svgElement).hasClass(className)) {
           $(svgElement).removeClass(className);
 
@@ -615,6 +721,7 @@
         }
       }
     }
+    
 
     updateStateTransitions() {
       if (!this.cssRules || !this.cssRules.length)
@@ -673,7 +780,9 @@
         }
       }
     }
+    
 
+    //设置实体样式
     setEntityStyle(svgElementConfig, svgElement, entityConfig, state) {
       let stateConfig = entityConfig.group.states.find(stateConfig => (stateConfig.state === entityConfig.lastState));
       if (stateConfig) {
@@ -705,9 +814,9 @@
       }
     }
 
+    // connectedcallback时 点击调用服务
     onElementClick(e) {
       e.stopPropagation();
-
       let svgElement = e.target;
 
       let elementConfig = this.instance.elementConfigs[this.elementId];
@@ -757,6 +866,7 @@
       }
     }
 
+    //点击调用服务
     onEntityClick(e) {
       e.stopPropagation();
 
@@ -784,7 +894,6 @@
           if (!data.entity_id) {
             data['entity_id'] = entityId;
           }
-
           this.instance.hass.callService(domain, action.service, data);
         }
         else {
@@ -818,7 +927,6 @@
 
     getStroke(stateConfig) {
       let stroke = undefined;
-
       for (let cssRule of this.cssRules) {
         if (cssRule.selectorText && cssRule.selectorText.indexOf(`.${stateConfig.class}`) >= 0) {
           if (cssRule.style && cssRule.style.stroke) {
@@ -832,7 +940,6 @@
           }
         }
       }
-
       return stroke;
     }
 
@@ -848,7 +955,8 @@
         svgElement.style.fill = color;
       }
     }
-
+    
+    //获取服务器的时间
     getServerMoment() {
       let serverMoment = moment();
       if (this.timeDifference >= 0)
@@ -857,7 +965,18 @@
         serverMoment.add(Math.abs(this.timeDifference), 'milliseconds');
       return serverMoment;
     }
-
+    
+    // 获取css文件内容，每个小块转化成数组中的每个对象元素 
+    /* 
+    CSSStyleRule = {
+      selectorText: ".success-text", 
+      style: CSSStyleDeclaration, 
+      type: 1, 
+      cssText: ".success-text { fill: rgb(60, 118, 61) !important; }",
+      parentStyleSheet: CSSStyleSheet, 
+      ......
+    }
+    */              
     getArray(list) {
       return Array.isArray(list) ? list : Object.keys(list).map(key => list[key]);
     }
@@ -887,14 +1006,30 @@
       $(debug).find('ul').append(`<li>${message}</li>`)
       $(debug).css('display', 'block');
     }
+    
+    emitteridlist(message) {
+      if ((this.config.warnings === null) || (this.config.warnings !== undefined)) {
+        let emitterids = this.$.emitterids;
+        $(emitterids).find('select').append(`<option value = ${message} >${message}</option>`)
+        $(emitterids).css('display', 'block');
+      }
+    }
 
+    receiveidlist(message) {
+      if ((this.config.warnings === null) || (this.config.warnings !== undefined)) {
+        let receiveids = this.$.receiveids;
+        $(receiveids).find('select').append(`<option value = ${message} >${message}</option>`)
+        $(receiveids).css('display', 'block');
+      }
+    }
+
+    //创建link标签到head里
     loadStyleSheet(path, fn, scope) {
       let head = document.getElementsByTagName('head')[0]; // reference to document.head for appending/ removing link nodes
       let link = document.createElement('link');           // create the link node
       link.setAttribute('href', path);
       link.setAttribute('rel', 'stylesheet');
       link.setAttribute('type', 'text/css');
-
       let sheet, cssRules;
       // get the correct properties to check for depending on the browser
       if ('sheet' in link) {
@@ -972,5 +1107,33 @@
     }
   }
   customElements.define(HaFloorplan.is, HaFloorplan);
+
+  var HaFloorplanInit = new HaFloorplan()
+
+  function changereceiveid(value) {
+    pushmatchingidlist(value)
+  }
+    
+  function changeemitterid(value) {
+    pushmatchingidlist(value)
+  }
+
+  // matching_list = ["发射器ID", "接收器ID"]
+  function pushmatchingidlist(value) {
+    // 过滤初始值
+    if(value != "00000000") {
+      if (value.substring(0, 1) == "0"){
+        matching_list[0] = value
+      }
+      else if(value.substring(0, 1) == "8"){
+        matching_list[1] = value
+      }
+    }
+  }
+
+  // 点击配对按钮 调用配对服务
+  function clickmatching() {
+    patchService.callService('switch', 'matching_id', {entity_id: matching_list})
+  }
 
 </script>
