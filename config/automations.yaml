@@ -1,38 +1,38 @@
-#12:30和17:30 off 所有的灯
-- alias: "1-关闭所有的灯"
-  trigger:
-    - platform: time
-      at: '12:30:00'
-    - platform: time
-      at: '17:00:00'
-  condition:
-    condition: time
-    # mon, tue, wed, thu, fri, sat, sun
-    weekday:
-      - mon
-      - tue
-      - wed
-      - thu
-      - fri
-  action:
-    service: light.turn_off
-    entity_id: group.all_lights
+# #12:30和17:30 off 所有的灯
+# - alias: "1-关闭所有的灯"
+#   trigger:
+#     - platform: time
+#       at: '12:30:00'
+#     - platform: time
+#       at: '17:00:00'
+#   condition:
+#     condition: time
+#     # mon, tue, wed, thu, fri, sat, sun
+#     weekday:
+#       - mon
+#       - tue
+#       - wed
+#       - thu
+#       - fri
+#   action:
+#     service: light.turn_off
+#     entity_id: group.all_lights
 
-#08:00和13:00 on 所有的灯
-- alias: "2-打开所有的灯"
-  trigger:
-    - platform: time
-      at: '08:00:00'
-    - platform: time
-      at: '13:00:00'
-  condition:
-    condition: time
-    weekday:
-      - mon
-      - tue
-      - wed
-      - thu
-      - fri
-  action:
-    service: light.turn_on
-    entity_id: group.all_lights
+# #08:00和13:00 on 所有的灯
+# - alias: "2-打开所有的灯"
+#   trigger:
+#     - platform: time
+#       at: '08:00:00'
+#     - platform: time
+#       at: '13:00:00'
+#   condition:
+#     condition: time
+#     weekday:
+#       - mon
+#       - tue
+#       - wed
+#       - thu
+#       - fri
+#   action:
+#     service: light.turn_on
+#     entity_id: group.all_lights

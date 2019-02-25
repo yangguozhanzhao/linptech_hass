@@ -24,6 +24,7 @@
     <app-toolbar hidden$='{{!showAppToolbar}}'>
       <ha-menu-button narrow='[[narrow]]' show-menu='[[showMenu]]'></ha-menu-button>
       <div main-title>[[panel.title]]</div>
+      <div><input id="isEdit" type="checkbox" on-change="changeMode" />编辑</div>
     </app-toolbar>
 
     <div class$='[[containerClass]]'>
@@ -35,7 +36,9 @@
 
 <script>
   class HaPanelFloorplan extends Polymer.Element {
-    static get is() { return 'ha-panel-floorplan'; }
+    static get is() {
+      return 'ha-panel-floorplan';
+    }
 
     static get properties() {
       return {
@@ -62,16 +65,32 @@
           type: String,
           value: 'container-fullscreen',
         },
+        isEdit:{
+          type:Boolean,
+          value:false,
+        },
       };
     }
 
+    connectedCallback(){
+      super.connectedCallback()
+      this.isEdit=this.hass.states["linptech.listen"].state
+      this.$.isEdit.checked=this.isEdit=='True'
+    }
+
     panelChanged() {
-      var hideAppToolbar = ((this.panel.config.hide_app_toolbar === null) || (this.panel.config.hide_app_toolbar !== undefined));
+      var hideAppToolbar = ((this.panel.config.hide_app_toolbar === null) || (this.panel.config.hide_app_toolbar !==
+        undefined));
       this.showAppToolbar = !hideAppToolbar;
       this.containerClass = this.showAppToolbar ? 'container-with-toolbar' : 'container-fullscreen';
+    }
+
+    changeMode() {
+      this.isEdit=this.$.isEdit.checked
+      let data={"is_listen":this.isEdit}
+      this.hass.callService('linptech_net', 'listen', data);
     }
   }
 
   customElements.define(HaPanelFloorplan.is, HaPanelFloorplan);
-
 </script>

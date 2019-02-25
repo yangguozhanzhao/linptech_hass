@@ -14,13 +14,13 @@ homeassistant:
   customize: !include customize.yaml
   packages: 
     pack_1: !include linptech.yaml
+  
+  # auth_providers:
+  #   - type: homeassistant
+  #  # Uncomment next line if you want to enable legacy API password support
+  #  # - type: legacy_api_password
 
-  auth_providers:
-   - type: homeassistant
-   # Uncomment next line if you want to enable legacy API password support
-   # - type: legacy_api_password
-
-# Enable the auth component
+# # Enable the auth component
 auth:
 
 # Show links to resources in log and frontend
@@ -45,7 +45,7 @@ http:
 # the developers to assist with development of Home Assistant.
 # For more information, please see:
 # https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-updater:
+#updater:
   # Optional, allows Home Assistant developers to focus on popular components.
   # include_used_components: true
 
@@ -58,55 +58,29 @@ conversation:
 history:
 
 # View all events in a logbook
-#logbook:
+logbook:
 
 # Enables a map showing the location of tracked devices
 #map:
 
-# Track the sun
-#sun:
 
-
-#~ sensor:
-  #~ #小米温湿度计
-  #~ - platform: mitemp_bt 
-    #~ mac: '4C:65:A8:D3:9F:46'
-    #~ name: 温湿度
-    #~ force_update: false
-    #~ median: 3
-    #~ monitored_conditions:
-      #~ - temperature
-      #~ - humidity
-  #~ #天气信息
-  #~ - platform: yr
-    #~ name: Weather
-    #~ #获得0小时后的数据
-    #~ forecast: 0
-    #~ monitored_conditions:
-      #~ # 温度
-      #~ - temperature
-      #~ # 显示天气图标
-      #~ - symbol
-      #~ # 湿度
-      #~ - humidity
-  #~ # 日期时间
-  #~ - platform: time_date  #设置工作平台为time_date
-    #~ display_options:  #设置信息显示内容选项
-      #~ - 'time'
-camera:
-  - platform: generic
-    name: linptech
-    still_image_url: >
-      {% if now().second<20 %}
-        https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/001.jpeg
-      {% else %}
-        {% if now().second<40  %}
-          https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/002.jpeg
-        {% else %}
-          https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/003.jpeg
-        {% endif %}
-      {% endif %}
+# camera:
+#   - platform: generic
+#     name: linptech
+#     still_image_url: >
+#       {% if now().second<20 %}
+#         https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/001.jpeg
+#       {% else %}
+#         {% if now().second<40  %}
+#           https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/002.jpeg
+#         {% else %}
+#           https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/003.jpeg
+#         {% endif %}
+#       {% endif %}
       
+linptech_net:
+  device: /dev/tty.SLAB_USBtoUART
+
 # floorplan
 panel_custom:
   - name: floorplan

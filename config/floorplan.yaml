@@ -1,67 +1,25 @@
-      name: Demo Floorplan
-      image: /local/custom_ui/floorplan/floorplan.svg
-      stylesheet: /local/custom_ui/floorplan/floorplan.css
-      
-      # These options are optional
-      warnings:                  # enable warnings (to find out why things might ot be working correctly)
-      # pan_zoom:                  # enable experimental panning / zooming
-      # hide_app_toolbar:          # hide the application toolbar (when used as a custom panel)
-      date_format: DD-MMM-YYYY   # Date format to use in hover-over text
-      
-      last_motion_entity: sensor.template_last_motion
-      last_motion_class: last-motion
+name: Demo Floorplan
+image: /local/custom_ui/floorplan/floorplan.svg
+stylesheet: /local/custom_ui/floorplan/floorplan.css
 
-      groups:
-        - name: Lights
-          entities:
-             - light.b1
-             - light.r1
-             - light.r2
-             - light.r3
-             - light.r4
-             - light.r5
-             - light.r6
-             - light.r7
-             - light.r8
-             - light.r9
-             - light.r10
-             - light.r11
-             - light.r12
-             - light.r13
-             - light.r14
-             - group.all_lights
-             - group.modules_light
-             - group.office_light
-          states:
-            - state: 'on'
-              class: 'light-on'
-            - state: 'off'
-              class: 'light-off'
-          action:
-            domain: homeassistant   # This optional parameter allows you to use other services such as homeassistant.toggle like here.
-            service: toggle
+# These options are optional
+warnings:                  # enable warnings (to find out why things might ot be working correctly)
+# pan_zoom:                  # enable experimental panning / zooming
+# hide_app_toolbar:          # hide the application toolbar (when used as a custom panel)
+date_format: DD-MMM-YYYY   # Date format to use in hover-over text
 
-        - name: Temperature
-          entities:
-           - sensor._temperature
-           - sensor.weather_temperature
-          # 为温度值加上单位°，或显示为未知
-          text_template: '${entity.state ? entity.state+"°" : "未知"}'
-          # 温度值小于10度，使用低温（my-temp-low）样式显示；
-          # 温度值小于30度，使用中温（my-temp-medium）样式显示；
-          # 其它，使用高温（my-temp-high）样式显示；
-          class_template: '
-            var temp = parseFloat(entity.state);
-            if (temp < 10)
-              return "my-temp-low";
-            else if (temp < 30)
-              return "my-temp-medium";
-            else
-              return "my-temp-high";
-            '
+last_motion_entity: sensor.template_last_motion
+last_motion_class: last-motion
 
-        - name: Humidity
-          entities:
-            - sensor._humidity
-            - sensor.weather_humidity
-          text_template: '${entity.state ? entity.state+"%" : "未知"}'
+groups:
+  - name: Lights
+    entities:
+      - light.80017306
+    states:
+      - state: 'on'
+        class: 'light-on'
+      - state: 'off'
+        class: 'light-off'
+    action:
+      domain: homeassistant   # This optional parameter allows you to use other services such as homeassistant.toggle like here.
+      service: toggle

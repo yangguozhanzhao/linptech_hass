@@ -4,9 +4,8 @@
 
 - 领普产品
   - [x] 接收器：R3AC+四路接收器
-  - [ ] K4R实现总控区域接收器，一个对多个接收器，距离品质稳定性有待提高
-  - [ ] K5单开或G1S发射器，桌面一对一或者多对一控制一个接收器，基本没有问题
-  - [ ] 中继器，中继控制命令（来自发射器或者控制中心）到接收器，中继状态值到控制中心
+  - [x] K4R实现总控区域接收器，一个对多个接收器，距离品质稳定性有待提高
+  - [x] K5单开或G1S发射器，桌面一对一或者多对一控制一个接收器，基本没有问题
 
 ## 2. 安装配置说明
 
@@ -43,3 +42,7 @@ Exec = chromium-browser --kiosk --disable-pinch http://127.0.0.1/
 
 - 开关加入
 - 自定义配置界面开发
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 362.20996 257.04596" version="1.1" xml:space="preserve" id="svg475" sodipodi:docname="21-Model.svg" width="362.20996" height="257.04596" style="fill-rule: evenodd; stroke-linecap: round; stroke-linejoin: round; height: 100%; width: 100%; position: absolute;" inkscape:version="0.92.3 (2405546, 2018-03-11)">
+
+<svg id="SvgjsSvg1001" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs">

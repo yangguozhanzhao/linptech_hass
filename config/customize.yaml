@@ -1,8 +1,12 @@
-light.r1:
-  icon: mdi:flash
-group.office_light:
-  assumed_state: true
-group.modules_light:
-  assumed_state: true
-light.r2:
-  icon: mdi:access-point
+# light.r1:
+#   icon: mdi:flash
+# group.office_light:
+#   assumed_state: true
+# group.modules_light:
+#   assumed_state: true
+# light.r2:
+#   icon: mdi:access-point
+# light.2:
+#   hidden: true
+# switch.00089a6b:
+#   assumed_state: true

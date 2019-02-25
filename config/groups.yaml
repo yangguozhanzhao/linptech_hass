@@ -1,33 +1,33 @@
-office_light:
-  name: 办公室灯
-  icon: mdi:light
-  entities:
-    - light.r1
-    - light.r2
-    - light.r3
-    - light.r4
-    - light.r5
-    - light.r6
+# office_light:
+#   name: 办公室灯
+#   icon: mdi:light
+#   entities:
+#     - light.r1
+#     - light.r2
+#     - light.r3
+#     - light.r4
+#     - light.r5
+#     - light.r6
 
-modules_light:
-  name: 模块车间灯
-  icon: mdi:light
-  entities:
-    - light.r7
-    - light.r8
-    - light.r9
-    - light.r10
-    - light.r11
-    - light.r12
-    - light.r13
-    - light.r14
+# modules_light:
+#   name: 模块车间灯
+#   icon: mdi:light
+#   entities:
+#     - light.r7
+#     - light.r8
+#     - light.r9
+#     - light.r10
+#     - light.r11
+#     - light.r12
+#     - light.r13
+#     - light.r14
 
-tab_office:
-  view: yes
-  name: 办公室
-  entities: group.office_light
+# tab_office:
+#   view: yes
+#   name: 办公室
+#   entities: group.office_light
 
-tab_modules:
-  view: yes
-  name: 模块车间
-  entities: group.modules_light
+# tab_modules:
+#   view: yes
+#   name: 模块车间
+#   entities: group.modules_light

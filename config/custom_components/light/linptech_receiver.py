@@ -6,17 +6,15 @@ import logging
 import voluptuous as vol
 
 from homeassistant.const import (CONF_NAME, CONF_ID,CONF_TYPE)
-from custom_components.linptech_dongle import LinptechDevice
+from custom_components.linptech_net import LinptechDevice,LINPTECH_NET
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.light import PLATFORM_SCHEMA
 from homeassistant.components.light import Light
 import time
 
-REQUIREMENTS = ['linptech==0.1.7']
 CONF_SENDER_ID = 'transmitors'
 CONF_CHANNEL="channel"
 DEFAULT_NAME = 'Linptech Receiver'
-LIGHT_ID = "light_id"
 
 from linptech.constant import CmdType,State,ReceiverChannel,ReceiverType,PacketType
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
@@ -27,33 +25,29 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 	vol.Optional(CONF_CHANNEL, default=ReceiverChannel.c1): vol.In(ReceiverChannel.ALL),
 })
 
-
-def setup_platform(hass, config, add_devices, discovery_info=None):
-	"""Set up the linptech light platform."""	
-	t_id = config.get(CONF_SENDER_ID)
-	r_name = config.get(CONF_NAME)
-	r_id = config.get(CONF_ID)
-	r_channel = config.get(CONF_CHANNEL)
-	r_type = config.get(CONF_TYPE)
-	add_devices([LinptechReceiver(t_id, r_name, r_id,r_type,r_channel)])
+def setup_platform(hass, config, add_devices, discovery_info):
+	"""Set up the linptech light platform."""
+	print(discovery_info)
+	t_id =  config.get(CONF_SENDER_ID)
+	r_name = discovery_info['id'] if discovery_info else config.get(CONF_NAME)
+	r_id = discovery_info['id'] if discovery_info else config.get(CONF_ID)
+	r_channel =discovery_info['channel'] if discovery_info else config.get(CONF_CHANNEL) 
+	r_type =discovery_info['type'] if discovery_info else  config.get(CONF_TYPE)
+	add_devices([LinptechReceiver(hass,t_id, r_name, r_id,r_type,r_channel)])
 
 # linptech receiver
 class LinptechReceiver(LinptechDevice, Light):
 	"""Representation of an linptech light source."""
-	def __init__(self, t_id, r_name, r_id,r_type,r_channel):
+	def __init__(self,hass, t_id, r_name, r_id,r_type,r_channel):
 		"""Initialize the linptech light source."""
-		LinptechDevice.__init__(self)
+		LinptechDevice.__init__(self,r_id,r_type,r_channel)
+		self.hass = hass
 		self.on_state = False
 		self.rssi="00"
-		self.prev_send=["",0]
-
 		self.t_id = t_id
-		self.r_id = r_id
 		self.r_name = r_name
-		self.r_type = r_type
-		self.r_channel=r_channel
-		time.sleep(1)
-		self.get_state()
+		self.is_hidden=False
+		
 
 	@property
 	def name(self):
@@ -64,59 +58,47 @@ class LinptechReceiver(LinptechDevice, Light):
 	def is_on(self):
 		"""If light is on."""
 		return self.on_state
-
+	
+	@property
+	def hidden(self):
+		return self.is_hidden
+	
 	@property
 	def device_state_attributes(self):
-		"""设置灯的ID，作为其他属性."""
 		return {
-			LIGHT_ID: self.r_id,
-		}
-
-	
+			"id":self.id,
+			"type":self.type,
+			"channel":self.channel
+			}
 	def get_state(self):
 		try:
-			command = PacketType.state +self.r_id+self.r_type+self.r_channel
-			#print(command)
-			self.send_command(command)
-			self.prev_send=[command,0]
-		except :
-			logging.error("receiver get_state error")
-			pass
+			self.linptech_net.lp.read_receiver_state(self.id,self.type)
+		except Exception as e:
+			logging.error("receiver get_state error:%s",e)
 		
 	def turn_on(self, **kwargs):
 		try:
-			command = PacketType.state+self.r_id+self.r_type+\
-				CmdType.write_state+self.r_channel+self.r_channel
-			self.send_command(command)
-			self.prev_send=[command,0]
+			self.linptech_net.lp.set_receiver_on(self.id,self.type,self.channel)
 			self.on_state = True
-		except :
-			logging.error("receiver turn on error")
+		except Exception as e:
+			logging.error("receiver turn on error:%s",e)
 			pass
-		
-
+	
 	def turn_off(self, **kwargs):
 		try:
-			command = PacketType.state+self.r_id+self.r_type+\
-				CmdType.write_state+self.r_channel+State.off
-			self.send_command(command)
-			self.prev_send=[command,0]
+			self.linptech_net.lp.set_receiver_off(self.id,self.type,self.channel)
 			self.on_state = False
-		except :
-			logging.error("receiver turn off error")
+		except Exception as e:
+			logging.error("receiver turn off error:%s",e)
 		
-
-	def value_changed(self, val=None):
-		"""Update the internal state of this device."""
+	def value_changed(self, data, optional):
+		self.rssi = "{0:>02}".format(int(optional[0:2],16))
 		try:
-			if val is not None:
-				self.on_state = bool(int(val,16)&int(self.r_channel) == int(self.r_channel))
+			self.on_state = bool(int(data[-1],16)&int(self.channel) == int(self.channel))
 			if "rssi" in self.r_name:
 				self.r_name=self.r_name[0:-2]+self.rssi
 			else:
 				self.r_name=self.r_name+",rssi="+self.rssi
-			while not self.hass:
-				time.sleep(0.2)
 			self.schedule_update_ha_state()
-		except :
-			logging.error("receiver value changed error")
+		except Exception as e:
+			logging.error("receiver value changed error:%s",e)
