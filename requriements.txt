@@ -1,2 +1,2 @@
-homeassistant==0.77.3
-linptech >= 0.1.1
+homeassistant==0.88.2
+linptech >= 0.2.1

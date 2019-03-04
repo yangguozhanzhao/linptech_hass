@@ -1,8 +1,8 @@
 ###################################################设备#######################
-linptech_dongle:
-  device: /dev/tty.SLAB_USBtoUART
-  #device: /dev/ttyS0
-  #device: COM3
+linptech_net:
+  device: /dev/tty.SLAB_USBtoUART  #macos
+  #device: /dev/ttyS0  # linux
+  #device: COM3  # windows
 
 light:
   # 接收器
@@ -79,7 +79,12 @@ light:
     type: "81"
     channel: "01"
 
-  
+  # 大门口
+  - platform: linptech_receiver
+    id: 800154b1
+    name: door #8号
+    type: "81"
+    channel: "01"
 
 
   #四路测试
@@ -105,9 +110,9 @@ light:
     channel: "08"
 
 
-switch:
-  # 发射器ID容器
-  - platform: linptech_emitter
+# switch:
+#   # 发射器ID容器
+#   - platform: linptech_transmitor
 
 
 

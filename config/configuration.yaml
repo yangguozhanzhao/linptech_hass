@@ -12,22 +12,25 @@ homeassistant:
   time_zone: Asia/Shanghai
   # Customization file
   customize: !include customize.yaml
+  # linptech的灯控配置
   packages: 
     pack_1: !include linptech.yaml
 
-  auth_providers:
-   - type: homeassistant
-   # Uncomment next line if you want to enable legacy API password support
-   # - type: legacy_api_password
+
+  # auth_providers:
+  #  - type: homeassistant
+  #  # Uncomment next line if you want to enable legacy API password support
+  #  - type: legacy_api_password
 
 # Enable the auth component
-auth:
+# auth:
 
 # Show links to resources in log and frontend
 # introduction: 
 
 # Enables the frontend
 frontend:
+  themes: !include theme_midnight.yaml
 
 # Enables configuration UI
 config:
@@ -45,54 +48,23 @@ http:
 # the developers to assist with development of Home Assistant.
 # For more information, please see:
 # https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-updater:
+# updater:
   # Optional, allows Home Assistant developers to focus on popular components.
   # include_used_components: true
 
 # Discover some devices automatically
-#discovery:
+# discovery:
+#   enable:
+#     - homekit
+
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
 # Enables support for tracking state changes over time
 history:
 
-# View all events in a logbook
-#logbook:
-
-# Enables a map showing the location of tracked devices
-#map:
-
-# Track the sun
-#sun:
-
-
-#~ sensor:
-  #~ #小米温湿度计
-  #~ - platform: mitemp_bt 
-    #~ mac: '4C:65:A8:D3:9F:46'
-    #~ name: 温湿度
-    #~ force_update: false
-    #~ median: 3
-    #~ monitored_conditions:
-      #~ - temperature
-      #~ - humidity
-  #~ #天气信息
-  #~ - platform: yr
-    #~ name: Weather
-    #~ #获得0小时后的数据
-    #~ forecast: 0
-    #~ monitored_conditions:
-      #~ # 温度
-      #~ - temperature
-      #~ # 显示天气图标
-      #~ - symbol
-      #~ # 湿度
-      #~ - humidity
-  #~ # 日期时间
-  #~ - platform: time_date  #设置工作平台为time_date
-    #~ display_options:  #设置信息显示内容选项
-      #~ - 'time'
+ffmpeg:
+  ffmpeg_bin: '/Users/yangzhan/anaconda3/bin/ffmpeg'
 camera:
   - platform: generic
     name: linptech
@@ -106,6 +78,11 @@ camera:
           https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/003.jpeg
         {% endif %}
       {% endif %}
+  - platform: onvif
+    host: 192.168.1.198
+
+# homekit
+homekit:
       
 # floorplan
 panel_custom:
