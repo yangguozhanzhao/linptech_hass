@@ -1,113 +1,42 @@
 ###################################################设备#######################
 linptech_net:
-  device: /dev/tty.SLAB_USBtoUART  #macos
-  #device: /dev/ttyS0  # linux
+  # device: /dev/tty.SLAB_USBtoUART  #macos
+  device: /dev/ttyS0  # raspberry pi
   #device: COM3  # windows
 
 light:
-  # 接收器
   - platform: linptech_receiver
-    id: 80017337
-    name: r1 #打标机
+    id: 800175fa
+    name: r1 #会议室过道
     type: "81"
     channel: "01"
   - platform: linptech_receiver
-    id: 8001734d
-    name: r5 #程小鹏
+    id: 800020f6
+    name: r2 #展厅过道
     type: "81"
     channel: "01"
+  
   - platform: linptech_receiver
-    id: 80017354
-    name: r6 #会议桌
+    id: 80017677
+    name: logo #展厅过道
     type: "81"
     channel: "01"
+  
+  # 周飞办公室
   - platform: linptech_receiver
-    id: 80017357
-    name: r2 #程哥
+    id: 80003f7d
+    name: r3 
     type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 8001734e
-    name: r4 #李康
-    type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 80017306
-    name: r3 #打印机
-    type: "81"
-    channel: "01"
-
-  # 模块车间
-  - platform: linptech_receiver
-    id: 800172ea
-    name: r7 #1号
-    type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 800172f7
-    name: r8 #2号
-    type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 80017315
-    name: r9 #3号
-    type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 80017311
-    name: r10 #4号
-    type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 8001730b
-    name: r11 #5号
-    type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 80017304
-    name: r12 #6号
-    type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 800173ba
-    name: r13 #7号
-    type: "81"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 80017309
-    name: r14 #8号
-    type: "81"
-    channel: "01"
-
-  # 大门口
-  - platform: linptech_receiver
-    id: 800154b1
-    name: door #8号
-    type: "81"
-    channel: "01"
+    channel: "01" 
+  # - platform: linptech_receiver
+  #   id: 8000370a
+  #   name: r4
+  #   type: "81"
+  #   channel: "01"
+  
+   
 
 
-  #四路测试
-  - platform: linptech_receiver
-    id: 80012351
-    name: 2
-    type: "84"
-    channel: "01"
-  - platform: linptech_receiver
-    id: 80012351
-    name: 3
-    type: "84"
-    channel: "02"
-  - platform: linptech_receiver
-    id: 80012351
-    name: 4
-    type: "84"
-    channel: "04"
-  - platform: linptech_receiver
-    id: 80012351
-    name: 5
-    type: "84"
-    channel: "08"
 
 
 # switch:

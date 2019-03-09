@@ -1,1 +1,11 @@
-
+'1552113014532':
+  alias: 打开logo灯10秒
+  sequence:
+  - alias: ''
+    data:
+      entity_id: light.logo
+    service: light.turn_on
+  - delay: 00:00:10
+  - data:
+      entity_id: light.logo
+    service: light.turn_off

@@ -37,9 +37,9 @@ config:
 http:
   # Secrets are defined in the file secrets.yaml
   api_password: !secret http_password
-  server_port: 80
   trusted_networks:
     - 127.0.0.1
+    - 192.168.1.128
   # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
   #base_url: linptech.net:80
 
@@ -64,22 +64,35 @@ conversation:
 history:
 
 ffmpeg:
-  ffmpeg_bin: '/Users/yangzhan/anaconda3/bin/ffmpeg'
+  # ffmpeg_bin: '/Users/yangzhan/anaconda3/bin/ffmpeg'
+  ffmpeg_bin: /usr/bin/ffmpeg
 camera:
-  - platform: generic
-    name: linptech
-    still_image_url: >
-      {% if now().second<20 %}
-        https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/001.jpeg
-      {% else %}
-        {% if now().second<40  %}
-          https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/002.jpeg
-        {% else %}
-          https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/003.jpeg
-        {% endif %}
-      {% endif %}
-  - platform: onvif
-    host: 192.168.1.198
+  # - platform: generic
+  #   name: linptech
+  #   still_image_url: >
+  #     {% if now().second<20 %}
+  #       https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/001.jpeg
+  #     {% else %}
+  #       {% if now().second<40  %}
+  #         https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/002.jpeg
+  #       {% else %}
+  #         https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/003.jpeg
+  #       {% endif %}
+  #     {% endif %}
+  # - platform: onvif
+  #   host: 192.168.1.239
+  # - platform: ffmpeg
+  #   name: Cam01  #此为可选项，用于设定摄像头在Home Assistant中显示的名称
+  #   input: rtsp://192.168.1.162:8854/live1.264?user=admin&passwd=
+  - platform: ffmpeg
+    name: Cam02  #此为可选项，用于设定摄像头在Home Assistant中显示的名称
+    input: rtsp://192.168.1.162:8854/live2.264?user=admin&passwd= 
+
+binary_sensor:
+  - platform: ffmpeg_motion  #指定传感器工作平台为移动监测
+    name: menkou
+    input: rtsp://192.168.1.162:8854/live2.264?user=admin&passwd= 
+
 
 # homekit
 homekit:

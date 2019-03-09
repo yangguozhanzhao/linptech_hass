@@ -1,38 +1,47 @@
-#12:30和17:30 off 所有的灯
-- alias: "1-关闭所有的灯"
+- alias: 定时关闭所有灯
   trigger:
-    - platform: time
-      at: '12:30:00'
-    - platform: time
-      at: '17:00:00'
+  - platform: time
+    at: '12:30:00'
+  - platform: time
+    at: '17:00:00'
   condition:
     condition: time
-    # mon, tue, wed, thu, fri, sat, sun
     weekday:
-      - mon
-      - tue
-      - wed
-      - thu
-      - fri
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
   action:
     service: light.turn_off
     entity_id: group.all_lights
-
-#08:00和13:00 on 所有的灯
-- alias: "2-打开所有的灯"
+  id: e624185b55e4499a927627ae6543d01d
+- alias: 定时打开所有灯
   trigger:
-    - platform: time
-      at: '08:00:00'
-    - platform: time
-      at: '13:00:00'
+  - platform: time
+    at: 08:00:00
+  - platform: time
+    at: '13:00:00'
   condition:
     condition: time
     weekday:
-      - mon
-      - tue
-      - wed
-      - thu
-      - fri
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
   action:
     service: light.turn_on
     entity_id: group.all_lights
+  id: 980affc9cde44ed0be6e807691b5cddd
+- id: '1552111787069'
+  alias: 打开logo
+  trigger:
+  - entity_id: binary_sensor.menkou
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    service: script.1552113014532
