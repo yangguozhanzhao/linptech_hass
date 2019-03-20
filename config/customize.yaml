@@ -1,8 +1,1 @@
-light.r1:
-  icon: mdi:flash
-group.office_light:
-  assumed_state: true
-group.modules_light:
-  assumed_state: true
-light.r2:
-  icon: mdi:access-point
+

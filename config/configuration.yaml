@@ -1,101 +1,71 @@
 homeassistant:
-  # Name of the location where Home Assistant is running
-  name: 领普工厂
-  # Location required to calculate the time the sun rises and sets
+  name: 领普科技
+  # 经纬度
   latitude: 30.4418011306
   longitude: 114.4398800908
-  # Impacts weather/sunrise data (altitude above sea level in meters)
+  # 海拔
   elevation: 0
-  # metric for Metric, imperial for Imperial
   unit_system: metric
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Asia/Shanghai
-  # Customization file
   customize: !include customize.yaml
+
   # linptech的灯控配置
-  packages: 
-    pack_1: !include linptech.yaml
+  packages: !include_dir_named packages
 
-
-  # auth_providers:
-  #  - type: homeassistant
-  #  # Uncomment next line if you want to enable legacy API password support
-  #  - type: legacy_api_password
-
-# Enable the auth component
-# auth:
-
-# Show links to resources in log and frontend
-# introduction: 
-
-# Enables the frontend
-frontend:
-  themes: !include theme_midnight.yaml
-
-# Enables configuration UI
 config:
+system_health:
+
+
 http:
-  # Secrets are defined in the file secrets.yaml
   api_password: !secret http_password
   trusted_networks:
     - 127.0.0.1
-    - 192.168.1.128
-  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-  #base_url: linptech.net:80
-
-# Checks for available updates
-# Note: This component will send some information about your system to
-# the developers to assist with development of Home Assistant.
-# For more information, please see:
-# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-# updater:
-  # Optional, allows Home Assistant developers to focus on popular components.
-  # include_used_components: true
-
-# Discover some devices automatically
-# discovery:
-#   enable:
-#     - homekit
-
-# Allows you to issue voice commands from the frontend in enabled browsers
-conversation:
 
 # Enables support for tracking state changes over time
 history:
 
-ffmpeg:
-  # ffmpeg_bin: '/Users/yangzhan/anaconda3/bin/ffmpeg'
-  ffmpeg_bin: /usr/bin/ffmpeg
-camera:
-  # - platform: generic
-  #   name: linptech
-  #   still_image_url: >
-  #     {% if now().second<20 %}
-  #       https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/001.jpeg
-  #     {% else %}
-  #       {% if now().second<40  %}
-  #         https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/002.jpeg
-  #       {% else %}
-  #         https://github.com/yangguozhanzhao/linptech_doc/raw/master/images/003.jpeg
-  #       {% endif %}
-  #     {% endif %}
-  # - platform: onvif
-  #   host: 192.168.1.239
-  # - platform: ffmpeg
-  #   name: Cam01  #此为可选项，用于设定摄像头在Home Assistant中显示的名称
-  #   input: rtsp://192.168.1.162:8854/live1.264?user=admin&passwd=
-  - platform: ffmpeg
-    name: Cam02  #此为可选项，用于设定摄像头在Home Assistant中显示的名称
-    input: rtsp://192.168.1.162:8854/live2.264?user=admin&passwd= 
-
-binary_sensor:
-  - platform: ffmpeg_motion  #指定传感器工作平台为移动监测
-    name: menkou
-    input: rtsp://192.168.1.162:8854/live2.264?user=admin&passwd= 
-
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
 
 # homekit
 homekit:
+
+# hass性能
+sensor:
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /
+      - type: memory_use_percent
+      - type: processor_use
+
+ffmpeg:
+  # ffmpeg_bin: '/Users/yangzhan/anaconda3/bin/ffmpeg' #macos
+  ffmpeg_bin: /usr/bin/ffmpeg
+
+camera:
+  - platform: ffmpeg
+    name: c1  #此为可选项，用于设定摄像头在Home Assistant中显示的名称
+    input: rtsp://192.168.1.162:8854/live1.264?user=admin&passwd=
+  - platform: ffmpeg
+    name: c2  #此为可选项，用于设定摄像头在Home Assistant中显示的名称
+    input: rtsp://192.168.1.162:8854/live2.264?user=admin&passwd= 
+
+# binary_sensor:
+#   - platform: ffmpeg_motion  #指定传感器工作平台为移动监测
+#     name: menkou
+#     input: rtsp://192.168.1.162:8854/live2.264?user=admin&passwd= 
+
+
+climate:
+  - platform: xiaomi_miio_airconditioningcompanion
+    name: ac1
+    host: 192.168.1.194
+    token: 00ba936b166df35f664cb4ded9692d52
+    target_sensor: sensor.temperature_158d0001f53706
+    scan_interval: 60
+
       
 # floorplan
 panel_custom:
@@ -105,7 +75,5 @@ panel_custom:
     config: !include floorplan.yaml
 
 
-group: !include groups.yaml
-automation: !include automations.yaml
-script: !include scripts.yaml
+
 

@@ -14,7 +14,6 @@
       groups:
         - name: Lights
           entities:
-             - light.b1
              - light.r1
              - light.r2
              - light.r3
@@ -29,9 +28,12 @@
              - light.r12
              - light.r13
              - light.r14
-             - group.all_lights
-             - group.modules_light
-             - group.office_light
+             - light.r15
+             - light.r16
+             - light.r17
+             - light.r18
+             - light.r19
+
           states:
             - state: 'on'
               class: 'light-on'
@@ -40,28 +42,31 @@
           action:
             domain: homeassistant   # This optional parameter allows you to use other services such as homeassistant.toggle like here.
             service: toggle
-
-        - name: Temperature
+        
+        - name: Cameras
           entities:
-           - sensor._temperature
-           - sensor.weather_temperature
-          # 为温度值加上单位°，或显示为未知
-          text_template: '${entity.state ? entity.state+"°" : "未知"}'
-          # 温度值小于10度，使用低温（my-temp-low）样式显示；
-          # 温度值小于30度，使用中温（my-temp-medium）样式显示；
-          # 其它，使用高温（my-temp-high）样式显示；
-          class_template: '
-            var temp = parseFloat(entity.state);
-            if (temp < 10)
-              return "my-temp-low";
-            else if (temp < 30)
-              return "my-temp-medium";
-            else
-              return "my-temp-high";
-            '
-
-        - name: Humidity
+            - camera.c1
+            - camera.c2
+          states:
+            - state: 'idle'
+              class: 'camera-idle'
+        
+        - name: Climate
           entities:
-            - sensor._humidity
-            - sensor.weather_humidity
-          text_template: '${entity.state ? entity.state+"%" : "未知"}'
+            - climate.aqara_air_conditioning_companion
+          states:
+            - state: 'heat'
+              class: 'light-on'
+            - state: 'cool'
+              class: 'light-on'
+            - state: 'auto'
+              class: 'light-on'
+            - state: 'off'
+              class: 'light-off'
+          
+        - name: Scripts
+          entities:
+            - script.off_work
+          action:
+            domain: script
+            service: turn_on

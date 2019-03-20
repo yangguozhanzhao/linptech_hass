@@ -6,15 +6,20 @@ import logging
 import voluptuous as vol
 
 from homeassistant.const import (CONF_NAME, CONF_ID,CONF_TYPE)
-from custom_components.linptech_net import LinptechDevice,LINPTECH_NET
+from custom_components.linptech import LinptechDevice,LINPTECH_NET
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.light import PLATFORM_SCHEMA
 from homeassistant.components.light import Light
 import time
+from datetime import timedelta
+from homeassistant.helpers.event import track_time_interval
+
 
 CONF_SENDER_ID = 'transmitors'
 CONF_CHANNEL="channel"
 DEFAULT_NAME = 'Linptech Receiver'
+TIME_BETWEEN_UPDATES=timedelta(seconds=600)
+
 
 from linptech.constant import CmdType,State,ReceiverChannel,ReceiverType,PacketType
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
@@ -34,6 +39,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 	r_type = config.get(CONF_TYPE)
 	add_devices([LinptechReceiver(hass,t_id, r_name, r_id,r_type,r_channel)])
 
+
 # linptech receiver
 class LinptechReceiver(LinptechDevice, Light):
 	"""Representation of an linptech light source."""
@@ -46,7 +52,7 @@ class LinptechReceiver(LinptechDevice, Light):
 		self.t_id = t_id
 		self.r_name = r_name
 		self.is_hidden=False
-		
+		track_time_interval(self.hass,self.update_state, TIME_BETWEEN_UPDATES)
 
 	@property
 	def name(self):
@@ -74,7 +80,8 @@ class LinptechReceiver(LinptechDevice, Light):
 			self.linptech_net.lp.read_receiver_state(self.id,self.type)
 		except Exception as e:
 			logging.error("receiver get_state error:%s",e)
-		
+	def update_state(self,time):
+		self.get_state()
 	def turn_on(self, **kwargs):
 		try:
 			self.linptech_net.lp.set_receiver_on(self.id,self.type,self.channel)

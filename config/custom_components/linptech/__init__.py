@@ -4,21 +4,18 @@ from linptech.linptech_protocol import LinptechProtocol
 import logging
 import voluptuous as vol
 import time
-from datetime import timedelta
 
 from homeassistant.const import CONF_DEVICE
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.light import Light
 from homeassistant.helpers.entity import ToggleEntity
-from homeassistant.helpers.event import track_time_interval
 
 REQUIREMENTS = ['linptech']
 
 # from custom_components.switch.linptech_transmit import LinptechTransmit
-DOMAIN = 'linptech_net'
+DOMAIN = 'linptech'
 LINPTECH_NET = None
 RECEIVER='receiver'
-TIME_BETWEEN_UPDATES=timedelta(seconds=600)
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -34,8 +31,6 @@ def setup(hass, config):
 	global LINPTECH_NET
 	serial_dev = config[DOMAIN].get(CONF_DEVICE)
 	LINPTECH_NET = LinptechNet(hass, serial_dev, config)
-	hass.states.set('linptech.listen', False,attributes={"hidden":True})
-	track_time_interval(hass,LINPTECH_NET.update_state, TIME_BETWEEN_UPDATES)
 	return True
 
 
@@ -57,9 +52,6 @@ class LinptechNet:
 	def register_device(self, dev):
 		"""Register another device."""
 		self.devices.append(dev)
-
-	def update_state(self,now):
-		pass
 
 	def receive(self, data, optional):
 		# print(self.hass.states.get('linptech.listen').state)

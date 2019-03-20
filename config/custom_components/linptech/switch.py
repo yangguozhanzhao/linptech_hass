@@ -6,7 +6,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant.const import (CONF_NAME, CONF_ID,CONF_TYPE)
-from custom_components.linptech_net import LinptechDevice,LINPTECH_NET
+from custom_components.linptech import LinptechDevice,LINPTECH_NET
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.components.switch import PLATFORM_SCHEMA

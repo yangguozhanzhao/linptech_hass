@@ -1,0 +1,107 @@
+linptech:
+  # device: /dev/tty.SLAB_USBtoUART  #macos
+  device: /dev/ttyS0  # raspberry pi
+  #device: COM3  # windows
+
+light:
+  - platform: linptech
+    id: 80017677
+    name: r1 
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 800175f0
+    name: r2 
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 8001749a
+    name: r3 
+    type: "81"
+    channel: "01"
+
+  - platform: linptech
+    id: 80017601
+    name: r4 
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 80017651
+    name: r5 
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 8000698c
+    name: r6
+    type: "81"
+    channel: "01"
+
+  - platform: linptech
+    id: 80006744
+    name: r7
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 8000762d
+    name: r8 
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 80006fed
+    name: r9
+    type: "81"
+    channel: "01"
+
+  - platform: linptech
+    id: 800076f2
+    name: r10 
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 80006813
+    name: r11
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 800175c5
+    name: r12
+    type: "81"
+    channel: "01"
+  
+  - platform: linptech
+    id: 800174b4
+    name: r13
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 8001763f
+    name: r14
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 80017367
+    name: r15
+    type: "81"
+    channel: "01"
+
+  - platform: linptech
+    id: 800175fa
+    name: r16
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 800020f6
+    name: r17
+    type: "81"
+    channel: "01"
+
+  - platform: linptech
+    id: 8000370a
+    name: r18
+    type: "81"
+    channel: "01"
+  - platform: linptech
+    id: 80003f7d
+    name: r19
+    type: "81"
+    channel: "01"

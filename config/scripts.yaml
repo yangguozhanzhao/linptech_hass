@@ -9,3 +9,12 @@
   - data:
       entity_id: light.logo
     service: light.turn_off
+'off_work':
+  alias: 下班
+  sequence:
+  - data:
+      entity_id: climate.aqara_air_conditioning_companion
+    service: climate.turn_off
+  - data:
+      entity_id: ' group.all_lights'
+    service: light.turn_off
