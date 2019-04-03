@@ -105,3 +105,8 @@ light:
     name: r19
     type: "81"
     channel: "01"
+  - platform: linptech
+    id: 80003c84
+    name: r20
+    type: "81"
+    channel: "01"

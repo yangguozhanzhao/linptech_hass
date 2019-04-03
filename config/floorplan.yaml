@@ -53,7 +53,7 @@
         
         - name: Climate
           entities:
-            - climate.aqara_air_conditioning_companion
+            - climate.ac1
           states:
             - state: 'heat'
               class: 'light-on'

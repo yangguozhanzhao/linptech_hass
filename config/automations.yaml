@@ -37,10 +37,10 @@
 - id: '1552111787069'
   alias: 打开logo
   trigger:
-  - entity_id: binary_sensor.menkou
-    from: 'off'
+  - entity_id: image_processing.opencv_c1
+    from: '0'
     platform: state
-    to: 'on'
+    to: '1'
   condition: []
   action:
   - data: {}

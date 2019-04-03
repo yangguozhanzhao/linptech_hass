@@ -1,2 +1,2 @@
-homeassistant==0.89.2
+homeassistant==0.90.2
 linptech >= 0.2.1
